@@ -1,0 +1,162 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage{amssymb}
+%\usepackage[nomarkers]{endfloat}
+\usepackage{natbib}
+\usepackage{setspace}
+\usepackage{wasysym}
+\usepackage{wrapfig}
+
+\textwidth = 7 in
+\textheight = 9 in
+\oddsidemargin = -0.5 in
+\evensidemargin = -0.5 in
+\topmargin = 0.0 in
+\headheight = 0.0 in
+\headsep = 0.0 in
+\parskip = 0.1in
+\parindent = 0in
+\renewcommand{\Pr}{\mathbb{P}}
+\usepackage{url}
+\newcommand{\href}[2]{\url{#2}}
+%\usepackage{hyperref}
+%\hypersetup{backref,   linkcolor=blue, citecolor=red, colorlinks=false, hyperindex=true}
+\begin{document}
+notes from Monday, Feb.~4, 2019 \\
+\subsection*{Estimating allele freq from genotypes of mom + one child families}
+The data: $n$ families that have a genotype of the mother and one child.
+For each family we have a pair of observations, a mother's genotype and a child's genotype.
+So $x_i = (m_i, c_i)$ if $c_i$ is the child's genotype and $x_i$ is the pair of genotypes
+for family $i$.
+By definition the likelihood is the probability of the entire data set: $L(q) = \Pr(X\mid q)$
+
+We have 1 parameter that we want to estimate: $q$, the frequency of the $A$ allele (with $B$ being the other allele). So:
+\begin{eqnarray}
+  \Pr(g = A) & = & q \\
+  \Pr(g = B) & = & 1- q
+\end{eqnarray}
+where $g$ represents some gene sequence drawn from the ``gene pool.''
+
+Assuming the families are independent:
+\begin{eqnarray}
+  L(q) = \Pr(X\mid q) & = & \prod_{i=1}^{n}\Pr(x_i) 
+\end{eqnarray}
+
+It is tempting to simplify by assuming the genotypes are independent:
+\begin{eqnarray}\nonumber
+  L(q) & = & \prod_{i=1}^{n}\Pr(m_i)\Pr(c_i) \mbox{, but \bf{this is wrong!} } 
+\end{eqnarray}
+but this assumes that the child's genotype is independent of the mom's genotype. 
+That is clearly not a reasonable assumption.
+
+We need to use conditional probability:
+\begin{eqnarray}\nonumber
+  L(q) & = & \prod_{i=1}^{n}\left[\Pr\left(m_i\right)\Pr\left(c_i\mid m_i\right)\right]
+\end{eqnarray}
+
+The first factor for each family the probability that we'd get mom's genotype, if
+the allele frequency of $A$ was $q$.
+If we assume mom's 2 alleles are independent draws from the ``gene pool'' we can 
+make probabilistic statements about genotypes from the allele frequencies (this 
+is the Hardy-Weinberg model).
+If $m_i$ is the genotype of the $i$th mother:
+\begin{eqnarray}
+  \Pr(m_i = AA) & = & q^2 \\
+  \Pr(m_i = AB) & = & 2(1-q) q \\
+  \Pr(m_i = BB) & = & \left(1 - q\right)^2
+\end{eqnarray}
+
+The second factor is the probability of each possible value for $c_i$ conditional on $m_i$ and
+$q$.
+Mendel tells us these.
+It is convenient to put them in a table:\\
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+         & $\Pr(c_i = AA\mid m_i)$ & $\Pr(c_i = AB\mid m_i)$ & $\Pr(c_i = BB\mid m_i)$ \\
+\hline 
+$m_i=AA$ & $q$                     & $(1-q)$                 &  $0$ \\
+$m_i=AB$ & $q/2$                     & $1/2$                 &  $(1-q)/2$ \\
+$m_i=BB$ & $0$                     & $q$                 &  $(1-q)$ \\
+\hline
+\end{tabular}
+\end{center}
+note this table shows just the probability of the child conditional on mom's genotype (and the
+assumption that dad's contribution is a random draw from the gene pool).
+The middle row is a bit trickier than the others:
+\begin{eqnarray}
+  \Pr(c_i = AA \mid m_i = AB) & = & \Pr(\mbox{mom gives }A)\Pr(\mbox{dad gives }A) \nonumber \\
+  & = & (1/2)(q) = q/2 \\
+  \Pr(c_i = AB \mid m_i = AB) & = & \Pr(\mbox{mom gives }A)\Pr(\mbox{dad gives }B) + \Pr(\mbox{mom gives }B)\Pr(\mbox{dad gives }A) \nonumber \\
+  & = & (1/2)(1-q) + (1/2)(q) = 1/2
+\end{eqnarray}
+Note that each row of the conditional probability table sums to 1, because each
+row considers the entire sample space of the random event $c_i$.
+
+Making the probability statement for each family, is then just the product of the probability
+of mom's genotype and the probability of the child conditional on mom's genotype
+(the $\Pr\left(m_i\right)\Pr\left(c_i\mid m_i\right)$ factors in the likelihood eqn).
+\begin{center}
+\begin{tabular}{l|l|l}
+$\Pr(m_i=AA, c_i=AA) = q^3$       & $\Pr(m_i=AA, c_i=AB) = q^2(1-q)$ & $\Pr(m_i=AA, c_i=BB) =  0 $\\
+&&\\
+$\Pr(m_i=AB, c_i=AA) = q^2(1-q)$  & $\Pr(m_i=AB, c_i=AB) = q(1-q)$   & $\Pr(m_i=AB, c_i=BB) = q(1-q)^2$\\
+&&\\
+$\Pr(m_i=BB, c_i=AA) = 0$         & $\Pr(m_i=BB, c_i=AB) = q(1-q)^2$    & $\Pr(m_i=BB, c_i=BB) = (1-q)^3$\\
+\end{tabular}
+\end{center}
+It is a bit harder to see, but the whole table sums to 1 (for any value of $q$ in the feasible range
+$0\leq q\leq 1$).
+
+If we had a big data set we don't care what order we encounter the families. 
+The only thing that matters is the number of families observed in each datatype.
+
+Also note that geneticist like to be terse. 
+So we might want to denote a genotype with a count of $B$ alleles (so $AA=0$, $AB=1$, $BB=2$).
+
+See how brief this make our table:
+\begin{center}
+\begin{tabular}{l|l|l}
+$\Pr(m_i=0, c_i=0) = q^3$       & $\Pr(m_i=0, c_i=1) = q^2(1-q)$ & $\Pr(m_i=0, c_i=2) =  0 $\\
+&&\\
+$\Pr(m_i=1, c_i=0) = q^2(1-q)$  & $\Pr(m_i=1, c_i=1) = q(1-q)$   & $\Pr(m_i=1, c_i=2) = q(1-q)^2$\\
+&&\\
+$\Pr(m_i=2, c_i=0) = 0$         & $\Pr(m_i=2, c_i=1) = q(1-q)^2$    & $\Pr(m_i=2, c_i=2) = (1-q)^3$\\
+\end{tabular}
+\end{center}
+
+This let's us summarize the data in nine counts: $[n_{00}, n_{01}, n_{02}, n_{10},\ldots,n_{22}]$
+where
+$$n = \sum_{a=0}^{2}\sum_{b=0}^{2} n_{ab} $$
+
+This make the likelihood contribution very compact, too:
+\begin{eqnarray}\nonumber
+  L(q) & = & \prod_{i=1}^{n}\left[\Pr\left(m_i\right)\Pr\left(c_i\mid m_i\right)\right] \\
+   & = & \prod_{a=0}^{2}\prod_{b=0}^{2}\left[\Pr\left(m_i=a\right)\Pr\left(c_i=b\mid m_i=a\right)\right]^{n_{ab}}
+\end{eqnarray}
+
+products are hard to deal with when finding derivatives, so we can move to the log scale:
+\begin{eqnarray}\nonumber
+ \ln L(q) & = &  \sum_{a=0}^{2}\sum_{b=0}^{2}\ln\left(\left[\Pr\left(m_i=a\right)\Pr\left(c_i=b\mid m_i=a\right)\right]^{n_{ab}}\right)\\
+ & = & \sum_{a=0}^{2}\sum_{b=0}^{2}
+ n_{ab}\ln\left(\left[\Pr\left(m_i=a\right)\Pr\left(c_i=b\mid m_i=a\right)\right]}\right) \\
+ & = & \sum_{a=0}^{2}\sum_{b=0}^{2}\left(
+ n_{ab}\ln\left[\Pr\left(m_i=a\right)\right] + n_{ab}\ln\left[\Pr\left(c_i=b\mid m_i=a\right)\right] \right) \\
+\end{eqnarray}
+
+Note that if $n_{02} > 0$ or $n_{20} > 0$, we have an ``impossible family'' (indicating an error in our data or a mutation, which is
+disallowed in our model).
+
+Note that there is some sharing of terms in the log-likelihood, if we just look at the first term in each log-likelihood:
+\begin{eqnarray}
+ \ln L(q) & = & \sum_{a=0}^{2}\sum_{b=0}^{2}
+ n_{ab}\ln\left[\Pr\left(m_i=a\right)\right] + \sum_{a=0}^{2}\sum_{b=0}^{2} n_{ab}\ln\left[\Pr\left(c_i=b\mid m_i=a\right)\right] \\
+ & = & \sum_{a=0}^{2}
+ n_{a-}\ln\left[\Pr\left(m_i=a\right)\right] + \sum_{a=0}^{2}\sum_{b=0}^{2} n_{ab}\ln\left[\Pr\left(c_i=b\mid m_i=a\right)\right] 
+\end{eqnarray}
+
+if we use define $n_{a-} = n_{a0} + n_{a1} + n_{a2}$ to denote a count of all of the families that have a particular maternal
+genotype.
+
+
+\end{document}
