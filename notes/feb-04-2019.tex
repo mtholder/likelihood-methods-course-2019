@@ -152,11 +152,43 @@ Note that there is some sharing of terms in the log-likelihood, if we just look 
  \ln L(q) & = & \sum_{a=0}^{2}\sum_{b=0}^{2}
  n_{ab}\ln\left[\Pr\left(m_i=a\right)\right] + \sum_{a=0}^{2}\sum_{b=0}^{2} n_{ab}\ln\left[\Pr\left(c_i=b\mid m_i=a\right)\right] \\
  & = & \sum_{a=0}^{2}
- n_{a-}\ln\left[\Pr\left(m_i=a\right)\right] + \sum_{a=0}^{2}\sum_{b=0}^{2} n_{ab}\ln\left[\Pr\left(c_i=b\mid m_i=a\right)\right] 
+ n_{a}\ln\left[\Pr\left(m_i=a\right)\right] + \sum_{a=0}^{2}\sum_{b=0}^{2} n_{ab}\ln\left[\Pr\left(c_i=b\mid m_i=a\right)\right] 
+\end{eqnarray}
+where we use define $n_{a} = n_{a0} + n_{a1} + n_{a2}$ to denote a count of all of the families that have a particular maternal
+genotype.
+The notation allows us to skip the summation over $b$ (our index indicating the child's genotype).
+
+Now we can substitute our probability model into the likelihood.
+The algebra in parts:
+\begin{eqnarray}
+\sum_{a=0}^{2}
+ n_{a}\ln\left[\Pr\left(m_i=a\right)\right]  & = & n_0\ln(q^2) + n_1\ln(2q(1-q)) + n_2\ln((1-q)^2) \nonumber \\
+& = & 2n_0\ln(q) + n_1\ln(2) + n_1\ln(q) + n_1\ln(1-q)) + 2n_2\ln(1-q) \nonumber\\
+& = & \left(2n_0 + n_1\right)\ln(q) + \left(2n_2 + n_1\right) \ln(1-q)+ n_1\ln(2)
 \end{eqnarray}
 
-if we use define $n_{a-} = n_{a0} + n_{a1} + n_{a2}$ to denote a count of all of the families that have a particular maternal
-genotype.
+There is less simplification when we substitute for $\sum_{a=0}^{2}\sum_{b=0}^{2} n_{ab}\ln\left[\Pr\left(c_i=b\mid m_i=a\right)\right]$, (which we'll call $z$).
+Dropping out the terms with coefficients  ($n_{02}$ and $n_{20}$) we see:
+\begin{eqnarray}\nonumber
+z   & = & n_{00}\ln(q) + n_{01}\ln(1-q) +
+          n_{10}\ln(q/2) + n_{11}\ln(1/2) + n_{12}\ln((1-q)/2) + 
+           n_{21}\ln(q) + n_{22}\ln(1-q) \\
+    & = & \left(n_{00} + n_{10} +n_{21} \right)\ln(q) + \left(n_{01} + n_{12} +n_{22} \right)\ln(1-q)
+     + \left(n_{10} + n_{11} + n_{12} + \right)\ln(1/2) \nonumber\\
+    & = & \left(n_{00} + n_{10} +n_{21} \right)\ln(q) + \left(n_{01} + n_{12} +n_{22} \right)\ln(1-q)
+     - n_{1}\ln(2) 
+\end{eqnarray}
+
+So the full log likelihood collapses to a charming:
+
+\begin{eqnarray}\nonumber
+\ln L(q)   & = & \left(2n_0 + n_1\right)\ln(q) + \left(2n_2 + n_1\right) \ln(1-q)+ n_1\ln(2) \ldots \\
+   & & + \left(n_{00} + n_{10} +n_{21} \right)\ln(q) + \left(n_{01} + n_{12} +n_{22} \right)\ln(1-q)
+     - n_{1}\ln(2)  \nonumber \\
+   & = & \left(2n_0 + n_1\right)\ln(q) + \left(2n_2 + n_1\right) \ln(1-q)+   \left(n_{00} + n_{10} +n_{21} \right)\ln(q) + \left(n_{01} + n_{12} +n_{22} \right)\ln(1-q) \nonumber \\
+ & = & \left(2n_0 + n_1 + n_{00} + n_{10} +n_{21}\right)\ln(q) + \left(2n_2 + n_1 + n_{01} + n_{12} +n_{22}\right) \ln(1-q)
+\end{eqnarray}
 
 
 \end{document}
+
