@@ -19,10 +19,12 @@
 \renewcommand{\Pr}{\mathbb{P}}
 \usepackage{url}
 \newcommand{\href}[2]{\url{#2}}
-%\usepackage{hyperref}
-%\hypersetup{backref,   linkcolor=blue, citecolor=red, colorlinks=false, hyperindex=true}
+\usepackage{hyperref}
+\hypersetup{backref,   linkcolor=blue, citecolor=red, colorlinks=true, hyperindex=true}
 \begin{document}
 notes from Monday, Feb.~4, 2019 \\
+\tableofcontents
+
 \section{Estimating allele freq from genotypes of mom + one child families}
 
 \subsection{The data}
@@ -63,7 +65,7 @@ The first factor for each family is the probability that we'd get mom's genotype
 the allele frequency of $A$ was $q$.
 If we assume mom's two gene copies are each independent draws from the ``gene pool'' we can 
 make probabilistic statements about mom's genotype from the allele frequencies (this 
-is ust the Hardy-Weinberg model).
+is just the Hardy-Weinberg model).
 \begin{eqnarray}
   \Pr(m_i = AA) & = & q^2 \\
   \Pr(m_i = AB) & = & 2(1-q) q \\
@@ -177,7 +179,7 @@ Products are hard to deal with when finding derivatives, so we can move to the l
  & = & \sum_{a=0}^{2}\sum_{b=0}^{2}
  n_{ab}\ln\left(\left[\Pr\left(m_i=a\right)\Pr\left(c_i=b\mid m_i=a\right)\right]\right) \\
  & = & \sum_{a=0}^{2}\sum_{b=0}^{2}\left(
- n_{ab}\ln\left[\Pr\left(m_i=a\right)\right] + n_{ab}\ln\left[\Pr\left(c_i=b\mid m_i=a\right)\right] \right) \\
+ n_{ab}\ln\left[\Pr\left(m_i=a\right)\right] + n_{ab}\ln\left[\Pr\left(c_i=b\mid m_i=a\right)\right] \right) 
 \end{eqnarray}
 
 
@@ -187,7 +189,7 @@ Note that there is some sharing of terms in the log-likelihood, if we just look 
  \ln L(q) & = & \sum_{a=0}^{2}\sum_{b=0}^{2}
  n_{ab}\ln\left[\Pr\left(m_i=a\right)\right] + \sum_{a=0}^{2}\sum_{b=0}^{2} n_{ab}\ln\left[\Pr\left(c_i=b\mid m_i=a\right)\right] \\
  & = & \sum_{a=0}^{2}
- n_{a}\ln\left[\Pr\left(m_i=a\right)\right] + \sum_{a=0}^{2}\sum_{b=0}^{2} n_{ab}\ln\left[\Pr\left(c_i=b\mid m_i=a\right)\right] \\
+ n_{a}\ln\left[\Pr\left(m_i=a\right)\right] + \sum_{a=0}^{2}\sum_{b=0}^{2} n_{ab}\ln\left[\Pr\left(c_i=b\mid m_i=a\right)\right]
 \end{eqnarray}
 where we use the row sum notation introduced earlier: $n_{a} = n_{a0} + n_{a1} + n_{a2}$ to denote a count of all of the families that have a particular maternal
 genotype.
@@ -259,7 +261,7 @@ Assuming (for now) that the MLE is where the derivative is 0, we can solve for t
 \hat{q} & = & \frac{2n_0 + n_1 + n_{00} + n_{10} +n_{21}}{2n_0 + 2n_1 + 2n_2 + n_{00} + n_{10} +n_{21} + n_{01} + n_{12} + n_{22}} \nonumber
 \end{eqnarray}
 
-Note that $n_0 = n_{00} + n_{01}$ because $n_{02}=$ if there are no impossible families.
+Note that $n_0 = n_{00} + n_{01}$ because $n_{02}=0$ if there are no impossible families.
 Similarly: $n_2 = n_{21} + n_{22}$ 
 This lets us simplify the denominator:
 \begin{eqnarray}
@@ -286,8 +288,7 @@ where the coefficient of 2 in the numerator comes from the fact that $n_0$ mom's
 The 2 in the denominator reflect diploidy (2 gene copies/mom).
 
 If we know mom's genotype, then the only thing we learn about the frequency of alleles is what we learn
-by looking at dad's contribution:
-
+by looking at dad's contribution.
 If we denote dad's contribution by $d_i$ we can line up the outcomes in our tabular form:
 \begin{table}[h!]
 \begin{tabular}{r|c|c|c}
