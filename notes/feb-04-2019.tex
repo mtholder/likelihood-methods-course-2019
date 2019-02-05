@@ -238,6 +238,26 @@ Assuming (for now) that the MLE is where the derivative is 0, we can solve for t
 \frac{2n_0 + n_1 + n_{00} + n_{10} +n_{21}}{\hat{q}}& = &\frac{2n_2 + n_1 + n_{01} + n_{12} +n_{22}}{1-\hat{q}} \nonumber \\
 \left(2n_0 + n_1 + n_{00} + n_{10} +n_{21}\right)(1 -\hat{q}) & = & \left(2n_2 + n_1 + n_{01} + n_{12} +n_{22}\right)\hat{q} \nonumber \\
 \left(2n_0 + n_1 + n_{00} + n_{10} +n_{21}\right) & = &\left(2n_0 + n_1 + n_{00} + n_{10} +n_{21} + 2n_2 + n_1 + n_{01} + n_{12} +n_{22}\right)\hat{q} \nonumber \\
+\left(2n_0 + n_1 + n_{00} + n_{10} +n_{21}\right) & = &\left(2n_0 + 2n_1 + 2n_2 + n_{00} + n_{10} +n_{21} + n_{01} + n_{12} + n_{22}\right)\hat{q} \nonumber \\
+\hat{q} & = & \frac{2n_0 + n_1 + n_{00} + n_{10} +n_{21}}{2n_0 + 2n_1 + 2n_2 + n_{00} + n_{10} +n_{21} + n_{01} + n_{12} + n_{22}} \nonumber
 \end{eqnarray}
+
+Note that $n_0 = n_{00} + n_{01}$ because $n_{02}=$ if there are no impossible families.
+Similarly: $n_2 = n_{21} + n_{22}$ 
+This lets us simplify the denominator:
+\begin{eqnarray}
+\hat{q} & = & \frac{2n_0 + n_1 + n_{00} + n_{10} +n_{21}}{3n_0 + 2n_1 + 3n_2 + n_{10} + n_{12}}  \nonumber
+\end{eqnarray}
+A bit more cryptically: $n_{1} = n_{10} + n_{11} + n_{12}$, so $n_{10}  + n_{12} = n_1 -+ n_{11}$, allowing us to restate:
+
+\begin{eqnarray}
+\hat{q} & = & \frac{2n_0 + n_1 + n_{00} + n_{10} +n_{21}}{3n_0 + 3n_1 + 3n_2 - n_{11}}  \nonumber
+\end{eqnarray}
+Further $n= n_0 + n_1 + n_2$, so
+\begin{eqnarray}
+\hat{q} & = & \frac{2n_0 + n_1 + n_{00} + n_{10} +n_{21}}{3n - n_{11}}  \nonumber
+\end{eqnarray}
+
+
 \end{document}
 
