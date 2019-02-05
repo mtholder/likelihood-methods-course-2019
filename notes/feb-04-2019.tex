@@ -23,13 +23,16 @@
 %\hypersetup{backref,   linkcolor=blue, citecolor=red, colorlinks=false, hyperindex=true}
 \begin{document}
 notes from Monday, Feb.~4, 2019 \\
-\subsection*{Estimating allele freq from genotypes of mom + one child families}
-The data: $n$ families that have a genotype of the mother and one child.
+\section{Estimating allele freq from genotypes of mom + one child families}
+
+\subsection{The data}
+$n$ families that have a genotype of the mother and one child.
 For each family we have a pair of observations, a mother's genotype and a child's genotype.
 So $x_i = (m_i, c_i)$ if $c_i$ is the child's genotype and $x_i$ is the pair of genotypes
 for family $i$.
 By definition the likelihood is the probability of the entire data set: $L(q) = \Pr(X\mid q)$
 
+\subsection{model}
 We have 1 parameter that we want to estimate: $q$, the frequency of the $A$ allele (with $B$ being the other allele). So:
 \begin{eqnarray}
   \Pr(g = A) & = & q \\
@@ -37,6 +40,7 @@ We have 1 parameter that we want to estimate: $q$, the frequency of the $A$ alle
 \end{eqnarray}
 where $g$ represents some gene sequence drawn from the ``gene pool.''
 
+\subsection{The likelihood}
 Assuming the families are independent:
 \begin{eqnarray}
   L(q) = \Pr(X\mid q) & = & \prod_{i=1}^{n}\Pr(x_i) 
@@ -54,6 +58,8 @@ We need to use conditional probability:
   L(q) & = & \prod_{i=1}^{n}\left[\Pr\left(m_i\right)\Pr\left(c_i\mid m_i\right)\right]
 \end{eqnarray}
 
+\subsection{Connecting the model to the general likelihood equation}
+\subsubsection{The probability of maternal genotypes}
 The first factor for each family the probability that we'd get mom's genotype, if
 the allele frequency of $A$ was $q$.
 If we assume mom's 2 alleles are independent draws from the ``gene pool'' we can 
@@ -66,6 +72,7 @@ If $m_i$ is the genotype of the $i$th mother:
   \Pr(m_i = BB) & = & \left(1 - q\right)^2
 \end{eqnarray}
 
+\subsubsection{The probability fo the child's genotype}
 The second factor is the probability of each possible value for $c_i$ conditional on $m_i$ and
 $q$.
 Mendel tells us these.
@@ -93,49 +100,60 @@ The middle row is a bit trickier than the others:
 Note that each row of the conditional probability table sums to 1, because each
 row considers the entire sample space of the random event $c_i$.
 
+\subsection{Expressing the likelihood as the joint probability for each ``row'' of data}
 Making the probability statement for each family, is then just the product of the probability
 of mom's genotype and the probability of the child conditional on mom's genotype
 (the $\Pr\left(m_i\right)\Pr\left(c_i\mid m_i\right)$ factors in the likelihood eqn).
 \begin{center}
-\begin{tabular}{l|l|l}
-$\Pr(m_i=AA, c_i=AA) = q^3$       & $\Pr(m_i=AA, c_i=AB) = q^2(1-q)$ & $\Pr(m_i=AA, c_i=BB) =  0 $\\
-&&\\
-$\Pr(m_i=AB, c_i=AA) = q^2(1-q)$  & $\Pr(m_i=AB, c_i=AB) = q(1-q)$   & $\Pr(m_i=AB, c_i=BB) = q(1-q)^2$\\
-&&\\
-$\Pr(m_i=BB, c_i=AA) = 0$         & $\Pr(m_i=BB, c_i=AB) = q(1-q)^2$    & $\Pr(m_i=BB, c_i=BB) = (1-q)^3$\\
+\begin{tabular}{r|l|l|l}
+& $c_i=AA$ & $c_i=AB$ & $c_i=BB$ \\
+\hline
+&&&\\
+$m_i=AA$ & $\Pr(m_i, c_i) = q^3$       & $\Pr(m_i, c_i) = q^2(1-q)$ & $\Pr(m_i, c_i) =  0 $\\
+& &&\\
+$m_i=AB$ & $\Pr(m_i, c_i) = q^2(1-q)$  & $\Pr(m_i, c_i) = q(1-q)$   & $\Pr(m_i, c_i) = q(1-q)^2$\\
+& &&\\
+$m_i=BB$ & $\Pr(m_i, c_i) = 0$         & $\Pr(m_i, c_i) = q(1-q)^2$    & $\Pr(m_i, c_i) = (1-q)^3$\\
 \end{tabular}
 \end{center}
 It is a bit harder to see, but the whole table sums to 1 (for any value of $q$ in the feasible range
 $0\leq q\leq 1$).
 
+\subsection{Terser representation of the data}
 If we had a big data set we don't care what order we encounter the families. 
 The only thing that matters is the number of families observed in each datatype.
-
 Also note that geneticist like to be terse. 
 So we might want to denote a genotype with a count of $B$ alleles (so $AA=0$, $AB=1$, $BB=2$).
-
-See how brief this make our table:
-\begin{center}
-\begin{tabular}{l|l|l}
-$\Pr(m_i=0, c_i=0) = q^3$       & $\Pr(m_i=0, c_i=1) = q^2(1-q)$ & $\Pr(m_i=0, c_i=2) =  0 $\\
-&&\\
-$\Pr(m_i=1, c_i=0) = q^2(1-q)$  & $\Pr(m_i=1, c_i=1) = q(1-q)$   & $\Pr(m_i=1, c_i=2) = q(1-q)^2$\\
-&&\\
-$\Pr(m_i=2, c_i=0) = 0$         & $\Pr(m_i=2, c_i=1) = q(1-q)^2$    & $\Pr(m_i=2, c_i=2) = (1-q)^3$\\
-\end{tabular}
-\end{center}
-
 This let's us summarize the data in nine counts: $[n_{00}, n_{01}, n_{02}, n_{10},\ldots,n_{22}]$
 where
 $$n = \sum_{a=0}^{2}\sum_{b=0}^{2} n_{ab} $$
+Note that if $n_{02} > 0$ or $n_{20} > 0$, we have an ``impossible family'' (indicating an error in our data or a mutation, which is
+disallowed in our model).
 
+Because the order of the observations don't matter (only the counts matter), the stats jargon would
+say the the counts are a ``sufficient statistic'' in the inference problem.
+
+% See how brief this make our table:
+% \begin{center}
+% \begin{tabular}{l|l|l}
+% $\Pr(m_i=0, c_i=0) = q^3$       & $\Pr(m_i=0, c_i=1) = q^2(1-q)$ & $\Pr(m_i=0, c_i=2) =  0 $\\
+% &&\\
+% $\Pr(m_i=1, c_i=0) = q^2(1-q)$  & $\Pr(m_i=1, c_i=1) = q(1-q)$   & $\Pr(m_i=1, c_i=2) = q(1-q)^2$\\
+% &&\\
+% $\Pr(m_i=2, c_i=0) = 0$         & $\Pr(m_i=2, c_i=1) = q(1-q)^2$    & $\Pr(m_i=2, c_i=2) = (1-q)^3$\\
+% \end{tabular}
+% \end{center}
+
+\subsection{Rewriting the likelihood with the terser data representation}
 This make the likelihood contribution very compact, too:
 \begin{eqnarray}\nonumber
   L(q) & = & \prod_{i=1}^{n}\left[\Pr\left(m_i\right)\Pr\left(c_i\mid m_i\right)\right] \\
    & = & \prod_{a=0}^{2}\prod_{b=0}^{2}\left[\Pr\left(m_i=a\right)\Pr\left(c_i=b\mid m_i=a\right)\right]^{n_{ab}}
 \end{eqnarray}
 
-products are hard to deal with when finding derivatives, so we can move to the log scale:
+\subsection{Moving to the log-scale}
+
+Products are hard to deal with when finding derivatives, so we can move to the log scale:
 \begin{eqnarray}\nonumber
  \ln L(q) & = &  \sum_{a=0}^{2}\sum_{b=0}^{2}\ln\left(\left[\Pr\left(m_i=a\right)\Pr\left(c_i=b\mid m_i=a\right)\right]^{n_{ab}}\right)\\
  & = & \sum_{a=0}^{2}\sum_{b=0}^{2}
@@ -144,33 +162,45 @@ products are hard to deal with when finding derivatives, so we can move to the l
  n_{ab}\ln\left[\Pr\left(m_i=a\right)\right] + n_{ab}\ln\left[\Pr\left(c_i=b\mid m_i=a\right)\right] \right) \\
 \end{eqnarray}
 
-Note that if $n_{02} > 0$ or $n_{20} > 0$, we have an ``impossible family'' (indicating an error in our data or a mutation, which is
-disallowed in our model).
+
 
 Note that there is some sharing of terms in the log-likelihood, if we just look at the first term in each log-likelihood:
 \begin{eqnarray}
  \ln L(q) & = & \sum_{a=0}^{2}\sum_{b=0}^{2}
  n_{ab}\ln\left[\Pr\left(m_i=a\right)\right] + \sum_{a=0}^{2}\sum_{b=0}^{2} n_{ab}\ln\left[\Pr\left(c_i=b\mid m_i=a\right)\right] \\
  & = & \sum_{a=0}^{2}
- n_{a}\ln\left[\Pr\left(m_i=a\right)\right] + \sum_{a=0}^{2}\sum_{b=0}^{2} n_{ab}\ln\left[\Pr\left(c_i=b\mid m_i=a\right)\right] 
+ n_{a}\ln\left[\Pr\left(m_i=a\right)\right] + \sum_{a=0}^{2}\sum_{b=0}^{2} n_{ab}\ln\left[\Pr\left(c_i=b\mid m_i=a\right)\right] \\
 \end{eqnarray}
+
 where we use define $n_{a} = n_{a0} + n_{a1} + n_{a2}$ to denote a count of all of the families that have a particular maternal
 genotype.
+In other words, if you just see one number as a subscript for $n$ we are using it to refer to the
+  count of mothers with that genotype.
 The notation allows us to skip the summation over $b$ (our index indicating the child's genotype).
 
+This lets us realize that the log-likelihood neatly breaks down into a term that
+reflects the probability of the maternal genotypes, and another term that 
+reflects the probability of the children's genotypes:
+\begin{eqnarray}
+\ln L(q)  & = & M + C  \mbox{ where: } \nonumber\\
+M  & = & \sum_{a=0}^{2} n_{a}\ln\left[\Pr\left(m_i=a\right)\right]   \nonumber\\
+C & = &  \sum_{a=0}^{2}\sum_{b=0}^{2} n_{ab}\ln\left[\Pr\left(c_i=b\mid m_i=a\right)\right] \nonumber
+\end{eqnarray}
+
+
+\subsection{Making the log-likelihood equation more concrete}
 Now we can substitute our probability model into the likelihood.
 The algebra in parts:
 \begin{eqnarray}
-\sum_{a=0}^{2}
- n_{a}\ln\left[\Pr\left(m_i=a\right)\right]  & = & n_0\ln(q^2) + n_1\ln(2q(1-q)) + n_2\ln((1-q)^2) \nonumber \\
+M & = & n_0\ln(q^2) + n_1\ln(2q(1-q)) + n_2\ln((1-q)^2) \nonumber \\
 & = & 2n_0\ln(q) + n_1\ln(2) + n_1\ln(q) + n_1\ln(1-q)) + 2n_2\ln(1-q) \nonumber\\
 & = & \left(2n_0 + n_1\right)\ln(q) + \left(2n_2 + n_1\right) \ln(1-q)+ n_1\ln(2)
 \end{eqnarray}
 
-There is less simplification when we substitute for $\sum_{a=0}^{2}\sum_{b=0}^{2} n_{ab}\ln\left[\Pr\left(c_i=b\mid m_i=a\right)\right]$, (which we'll call $z$).
+There is less simplification when we substitute for $C$.
 Dropping out the terms with coefficients  ($n_{02}$ and $n_{20}$) we see:
 \begin{eqnarray}\nonumber
-z   & = & n_{00}\ln(q) + n_{01}\ln(1-q) +
+C   & = & n_{00}\ln(q) + n_{01}\ln(1-q) +
           n_{10}\ln(q/2) + n_{11}\ln(1/2) + n_{12}\ln((1-q)/2) + 
            n_{21}\ln(q) + n_{22}\ln(1-q) \\
     & = & \left(n_{00} + n_{10} +n_{21} \right)\ln(q) + \left(n_{01} + n_{12} +n_{22} \right)\ln(1-q)
@@ -179,16 +209,35 @@ z   & = & n_{00}\ln(q) + n_{01}\ln(1-q) +
      - n_{1}\ln(2) 
 \end{eqnarray}
 
-So the full log likelihood collapses to a charming:
-
+So the full log-likelihood collapses to a charming form:
 \begin{eqnarray}\nonumber
-\ln L(q)   & = & \left(2n_0 + n_1\right)\ln(q) + \left(2n_2 + n_1\right) \ln(1-q)+ n_1\ln(2) \ldots \\
+\ln L(q)   & = & M + C \\
+& = & \nonumber \left(2n_0 + n_1\right)\ln(q) + \left(2n_2 + n_1\right) \ln(1-q)+ n_1\ln(2) \ldots \\
    & & + \left(n_{00} + n_{10} +n_{21} \right)\ln(q) + \left(n_{01} + n_{12} +n_{22} \right)\ln(1-q)
      - n_{1}\ln(2)  \nonumber \\
    & = & \left(2n_0 + n_1\right)\ln(q) + \left(2n_2 + n_1\right) \ln(1-q)+   \left(n_{00} + n_{10} +n_{21} \right)\ln(q) + \left(n_{01} + n_{12} +n_{22} \right)\ln(1-q) \nonumber \\
  & = & \left(2n_0 + n_1 + n_{00} + n_{10} +n_{21}\right)\ln(q) + \left(2n_2 + n_1 + n_{01} + n_{12} +n_{22}\right) \ln(1-q)
 \end{eqnarray}
 
+\subsection{Finding the maximum likelihood estimator of $q$}
+We now will differentiate the log-likelihood with respect to the parameter of the model ($q$), so we can
+see how the log-likelihood changes as a function of $q$:
 
+\begin{eqnarray} \nonumber
+\ln L(q)   & = & \left(2n_0 + n_1 + n_{00} + n_{10} +n_{21}\right)\ln(q) + \left(2n_2 + n_1 + n_{01} + n_{12} +n_{22}\right) \ln(1-q) \\
+\frac{d \ln L(q)}{d q} & = & \frac{2n_0 + n_1 + n_{00} + n_{10} +n_{21}}{q} - \frac{2n_2 + n_1 + n_{01} + n_{12} +n_{22}}{1-q}
+\end{eqnarray}
+
+The maximum for the log-likelihood has to be either at one of the ends of the feasible range (at $q=0$ or $q=1$) or when the
+derivative is 0.
+Assuming (for now) that the MLE is where the derivative is 0, we can solve for the MLE ($\hat{q}$):
+\begin{eqnarray} \nonumber
+\frac{2n_0 + n_1 + n_{00} + n_{10} +n_{21}}{\hat{q}} - \frac{2n_2 + n_1 + n_{01} + n_{12} +n_{22}}{1-\hat{q}} = 0 \nonumber 
+\end{eqnarray}
+\begin{eqnarray}
+\frac{2n_0 + n_1 + n_{00} + n_{10} +n_{21}}{\hat{q}}& = &\frac{2n_2 + n_1 + n_{01} + n_{12} +n_{22}}{1-\hat{q}} \nonumber \\
+\left(2n_0 + n_1 + n_{00} + n_{10} +n_{21}\right)(1 -\hat{q}) & = & \left(2n_2 + n_1 + n_{01} + n_{12} +n_{22}\right)\hat{q} \nonumber \\
+\left(2n_0 + n_1 + n_{00} + n_{10} +n_{21}\right) & = &\left(2n_0 + n_1 + n_{00} + n_{10} +n_{21} + 2n_2 + n_1 + n_{01} + n_{12} +n_{22}\right)\hat{q} \nonumber \\
+\end{eqnarray}
 \end{document}
 
