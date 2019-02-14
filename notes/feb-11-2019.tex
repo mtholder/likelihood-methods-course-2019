@@ -257,7 +257,7 @@ We could calculate the log-likelihood at the MLE and then find
 the values of $\theta$ that have $\ln L$ values of 1.92 lower than the maximum
 to get a nice interval estimate.
 
-\section{Exteding to richer data}
+\section{Extending to richer data}
 What if we knew that 2 changes occurred along the line from the MRCA to you and 3 occurred 
 on the lineage leading to JKK's mitochondrion?
 
@@ -278,12 +278,56 @@ Conceptually the model is the same but the expected number of substitutions
 Making the new version of Equation (\ref{toughIntegral})
 \begin{eqnarray}
 L(u, N)  = \Pr(Y \mid u, N)  & = &  \int_{0}^{\infty} \Pr(Y \mid u, t) f(t\mid N) dt \\
-& = &  \int_{0}^{\infty} \left[ \prod_{i=1}^{n} \right] \Pr(y_i \mid u, N) f(t\mid N)  dt\\
-& = &  \int_{0}^{\infty} \left[ \prod_{i=1}^{n}\left(\frac{(ut)^{y_i} e^{-ut}}{y_i!} \right)\right] \left(\frac{1}{N}\right) e^{-t/N}dt \\
+& = &  \int_{0}^{\infty} \left[ \prod_{i=1}^{n}  \Pr(y_i \mid u, N) \right]f(t\mid N)  dt\\
+& = &  \int_{0}^{\infty} \left[ \prod_{i=1}^{n}\left(\frac{(ut)^{y_i} e^{-ut}}{y_i!} \right)\right] \left(\frac{1}{N}\right) e^{-t/N}dt 
 \end{eqnarray}
 
+At this point, we can work on simplifiying the product that is in the hard braces:
+\begin{eqnarray}
+ \prod_{i=1}^{n}\left(\frac{(ut)^{y_i} e^{-ut}}{y_i!} \right) & = & 
+  \frac{\prod_{i=1}^{n}\left[(ut)^{y_i} e^{-ut}\right]}{\prod_{i=1}^{n}y_i!} \\
+  & = & 
+  \frac{\left[(ut)^{\sum_{i=1}^n y_i}\right] \left[e^{-nut}\right]}{\prod_{i=1}^{n}y_i!}
+  \label{mutSimple}
+\end{eqnarray}
+
+Recall that previously we were just thinking of the sum of number of counts
+across each branch ($X = k = 5$ instead of $y_i=2, y_2 = 3$).
+Consider the simplification in Equation \ref{mutSimple} with $n=2$ and $y_i=2, y_2 = 3$:
+:
+$$ \frac{(ut)^{2+3}e^{-2ut}}{2!3!} = \frac{(ut)^{5}e^{-2ut}}{2!3!} = \left(\frac{1}{{2!3!}}\right)(ut)^{5}e^{-2ut}$$ 
+to the corresponding part of equation \ref{toughIntegral} when the total count of mutations is $k=5$:
+$$\frac{(2ut)^5 e^{-2ut}}{5!} = \left(\frac{2^5}{{5!}}\right)(ut)^{5}e^{-2ut}$$
+We see that the likelihoods under these two models only differ by their constant
+coefficients.
+The coefficients are $\frac{1}{\prod_{i=1}^{n}y_i!}$ and $\frac{2^{k}}{k_i!}$ where $k=\sum_{i=1}^n y_i$.
+Those expressions contain variables to the data, so they may not appear to be ``constant,''
+but you have to recall that when we are doing inference the data is fixed.
+As you consider different values of the parameters $u$ and $N$ those coefficients don't 
+change.
+
+Whenever you calculate the likelihood ratio of two different values of a parameter, the
+coefficients will cross out in the ratio.
+In other words, the expression of the likelihood tells us that we will not get 
+any more information about $u$ and $N$ from the data with $Y=[2, 3]$ than we did
+from $X=5$.
+The MLE and the interval estimates will be the same as they were in the previous section.
 
 
+\section{Extending to a richer model}
+Can we tell if our data prefers a model that allows the rate of mutation to differ
+on the lineage leading to you vs the lineage leading to JKK?
+
+Now we have to split our rate from $u$ into a richer model with two rate parameters, $u_1$ and $u_2$.
+The modification to the likelihood is straightforward: now the parameters
+get subscripts, too!
+\begin{eqnarray}
+L(u_1, u_2, N)  = \Pr(Y \mid u_1, u_2, N)  & = &
+  \int_{0}^{\infty} \left[ \prod_{i=1}^{n}\left(\frac{(u_it)^{y_i} e^{-u_it}}{y_i!} \right)\right] \left(\frac{1}{N}\right) e^{-t/N}dt 
+\end{eqnarray}
+Appendix \ref{messyTricky} goes through the gory details.
+
+\newpage
 \appendix
 \section{Deriving the MLE of the product $ut$}\label{appUT}
 We noted the fact that $ut$ only occur as a product, so
@@ -354,6 +398,34 @@ Substituting in for C and remembering the constant coefficient for the integral 
 
 
 
+\section{The two-mutation-rate tricky integral}\label{messyTricky}
+We'll use $w = \sum_{i=1}^{n} u_i$ and $k= \sum{i=1}^{n}y_i$ here.
+\begin{eqnarray}
+  \int_{0}^{\infty} \left[ \prod_{i=1}^{n}\left(\frac{(u_it)^{y_i} e^{-u_it}}{y_i!} \right)\right] \left(\frac{1}{N}\right) e^{-t/N}dt 
+  & = & \int_{0}^{\infty} \left(\frac{\prod_{i=1}^{n}\left[(u_it)^{y_i}e^{-u_i t}\right]}{\prod_{i=1}^{n} y_i!}\right) \left(\frac{1}{N}\right) e^{-t/N} dt \\
+    & = & \int_{0}^{\infty} \left(\frac{e^{-w t}t^{k}\prod_{i=1}^{n}\left[u_i^{y_i} \right]}{\prod_{i=1}^{n} y_i!}\right) \left(\frac{1}{N}\right) e^{-t/N} dt \\
+    & = & \frac{\prod_{i=1}^{n}\left[u_i^{y_i}\right]}{N\prod_{i=1}^{n} y_i!}
+    \int_{0}^{\infty} \left(e^{-w t}t^k\right) e^{-t/N} dt \\
+    & = & \frac{\prod_{i=1}^{n}\left[u_i^{y_i}\right]}{N\prod_{i=1}^{n} y_i!}
+    \int_{0}^{\infty} \left(e^{-\frac{Nw + 1}{N}t}t^k\right) dt \\
+    & = & \frac{\prod_{i=1}^{n}\left[u_i^{y_i}\right]}{N\prod_{i=1}^{n} y_i!}
+    \int_{0}^{\infty} t^k e^{-Dt} dt 
+\end{eqnarray}
+where $D= \frac{Nw + 1}{N}$
+which is the same integral as in appendix \ref{toughIntegral}, but with a different constant (and a different 
+coefficient outside of the integration).
 
+$\Pr(Y=[y_1, y_2] \mid u_1, u_2, N)$ is equal to:
+\begin{eqnarray*}
+ & &  \frac{\prod_{i=1}^{n}\left[u_i^{y_i}\right]}{N\prod_{i=1}^{n} y_i!} 
+\int_{0}^{\infty}  t^ke^{-D t} dt \\
+& = & \frac{\prod_{i=1}^{n}\left[u_i^{y_i}\right]}{N\prod_{i=1}^{n} y_i!} \left(\frac{Nw + 1}{N}\right)^{-k-1}\Gamma(k+1) \\
+& = &
+\frac{\prod_{i=1}^{n}\left[u_i^{y_i}\right]}{N\prod_{i=1}^{n} y_i!} \left(\frac{N}{Nw + 1}\right)^{k+1} k! \\
+& = &
+\left[\prod_{i=1}^{n}\left(\frac{u_i^{y_i}}{y_i!}\right)\right] \left(\frac{N^k}{(Nw + 1)^{k+1}}\right) k! \\
+& = &
+\left[\prod_{i=1}^{n}\left(\frac{N^{y_i}u_i^{y_i}}{(Nw + 1)y_i!}\right)\right] \left(\frac{k!}{(Nw + 1)}\right) \\
+\end{eqnarray*}
 \end{document}
 
