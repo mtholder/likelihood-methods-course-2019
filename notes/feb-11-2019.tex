@@ -267,7 +267,7 @@ in our case, becase we are integrating over $dt$), so:
 & = & \left(\frac{(2u)^k}{N(k!)}\right) \int_{0}^{\infty}  t^ke^{-\frac{2uN - 1}{N} t} dt \\
 & = & \left(\frac{(2u)^k}{N(k!)}\right) \int_{0}^{\infty}  t^ke^{-C t} dt \\
 \end{eqnarray*}
-where $C=\frac{2uN - 1}{N}$.
+where $C=\frac{2uN + 1}{N}$.
 It'll be easier to look up $ \int_{0}^{\infty}  t^ke^{-C t} dt$ where $k$ is a non-negative
 integer and $C$ is a positive real number using Wolfram Alpha or some book than it would be
 to search for something that looks like Equation (\ref{toughIntegral}).
@@ -277,9 +277,22 @@ In fact Wolfram Alpha give you the result shown at:
 
 The part of the solution that says ``$\mbox{Re}(k) > - 1 \land \mbox{Re}(C) > 0$''
 means ``when $k$ is a real number greater than -1 and C is a positive real number''
-fortunately for us, both of those hold for our problem.
+fortunately for us, both of those hold for our problem.\footnote{\url{https://en.wikipedia.org/wiki/List_of_mathematical_symbols} is quite handy if you encounter math symbols that you don't understand}
 So the solution is what is shown prior to that qualification about the domain, namely:
-
 $$ \int_{0}^{\infty}  t^ke^{-C t} dt = C^{-k-1}\Gamma(k+1)$$
+where $\Gamma(k+1)$ is the \href{https://en.wikipedia.org/wiki/Gamma_function}{Gamma function}.
+For a positive integer argument $m$ it is an offset factorial $\Gamma(m) = (m-1)!$.
+So in our solution $\Gamma(k+1) = k!$.
+
+Substituting in for C and remembering the constant coefficient for the integral we have:
+
+\begin{eqnarray*}
+\Pr(X=k \mid u, N) & = & \left(\frac{(2u)^k}{N(k!)}\right) \int_{0}^{\infty}  t^ke^{-C t} dt \\
+ & = & \left(\frac{(2u)^k}{N(k!)}\right)C^{-k-1}\Gamma(k+1) \\
+ & = & \left(\frac{(2u)^k}{N(k!)}\right)\left(\frac{2uN + 1}{N}\right)^{-k-1}\left(k!\right) \\
+ & = & \left(\frac{(2u)^k}{N(k!)}\right)\left(\frac{N}{2uN + 1}\right)^{k+1}\left(k!\right) \\
+ & = & \left(\frac{(2u)^k}{N}\right)\left(\frac{N^{k+1}}{(2uN + 1)^{k+1}}\right)\\
+ & = & \frac{(2u)^k N^k}{(2uN + 1)^{k+1}} \\
+ & = & \frac{(2uN)^k}{(2uN + 1)^{k+1}} \\
 \end{document}
 
