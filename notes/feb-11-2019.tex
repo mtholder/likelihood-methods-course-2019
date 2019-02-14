@@ -1,0 +1,222 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage{amssymb}
+%\usepackage[nomarkers]{endfloat}
+\usepackage{natbib}
+\usepackage{setspace}
+\usepackage{wasysym}
+\usepackage{wrapfig}
+
+\textwidth = 7 in
+\textheight = 9 in
+\oddsidemargin = -0.5 in
+\evensidemargin = -0.5 in
+\topmargin = 0.0 in
+\headheight = 0.0 in
+\headsep = 0.0 in
+\parskip = 0.1in
+\parindent = 0in
+\renewcommand{\Pr}{\mathbb{P}}
+\usepackage{paralist}
+\usepackage{url}
+\newcommand{\href}[2]{\url{#2}}
+\usepackage{hyperref}
+\hypersetup{backref,   linkcolor=blue, citecolor=red, colorlinks=true, hyperindex=true}
+\begin{document}
+notes from the week of Feb.~11, 2019 \\
+\tableofcontents
+
+\section{Learning about a population's history from some sequence data}
+
+\subsection{The data}
+We do some sequencing of mitochondrial DNA sequences and find that your sequence
+differs from JKK's sequence at 5 sites, so $x=5$.
+
+What can we learn from this?\footnote{Ideally we'd think of a question, and then
+design the study and collect the data, but here we're thinking about the process
+of connecting a model to a dataset.}
+
+We might be able to learn something about:
+\begin{compactitem}
+    \item $t$ the time since the most recent common ancestor (MRCA)
+of your mitochondrial genome and John's.
+    \item  $u$ the rate at which mutations occur in the mitochondrial.
+    \item (this one is less intuitive, but$\ldots$) $N$ the effective population
+    size of humans.
+\end{compactitem}
+
+\subsection{the likelihood}
+As always, the likelihood of our model is the probability of seeing a value of the
+    random variable that represents our data set ($X$) which is equal to
+    the data we actually saw $5$, conditional on our model being true.
+We want $\Pr(X=5\mid\mbox{ some model})$, so we need to think about the model.
+
+\subsection{modeling mutations}
+We recall from intro bio that DNA polymerase is pretty good, which is to say 
+that mutations are pretty rare.
+
+It also seems reasonable to think of them as not just rare, but fairly independent of 
+each other.
+At least we don't think that if your mother had a mutation event in her mitochondrial 
+   genome that it probably has a large effect on the probability that you will experience a new mutational event.
+
+So we could model them as a rare event that happens at some constant rate with the
+    events being independent of each other.
+``Rare'' is important because it lets us be somewhat confident that our
+    observation of 5 {\em differences} between your sequence and JKK's
+    implies that there were a total of 5 {\em mutations} that happened on 
+    the path that connects the MRCA genome to your mitochondrion and JKK's.
+So, for our purposes we'll interpret $X=5$ differences to mean $X=5$ mutations.
+
+We don't really have good reason to think that the rate of mutations is constant, but
+    it seems intractable to model multiple rates when we just have 1 datum, so let's
+    just start with the one-rate model.
+
+Statistical modeling is the art of browsing Wikipedia articles about probability 
+    distributions until you find one that makes (close to) the same assumptions
+    that your biological model is making.
+In our case the opening paragraph\footnote{At least on the Valentine's day, 2019
+as I write this}
+of \url{https://en.wikipedia.org/wiki/Poisson_distribution}
+tells us that when we have independent events occurring at some constant rate, then
+the Poisson distribution tells us the probability of any number of events.
+
+Specifically if $\lamda$ is the expected number of events, then:
+\begin{equation}
+    \Pr(X=k\mid \lambda) = \frac{\lambda^k e^{-\lambda}}{k!}
+\end{equation}
+That is nice, but we were talking about rates and then find that
+the model is parameterized in terms of the expected number of events.
+Recall (or see the \href{https://en.wikipedia.org/wiki/Expected_value}{Wikipedia article on expected value}) that the expected value is basically the average value over
+infinitely many trials.
+We only have 1 trial, so how do we get the expected value?
+
+Well if our process has constant rate $u$ (mutations per generation) and run for
+$t$ generations from the MRCA to you and $t$ generations from the MRCA to JKK, then we say
+\begin{equation}
+ \mathbb{E}(\mbox{\# mutations)} = 2 u t = \lamba \mbox{ (in the Poisson)}
+\end{equation}
+were the funky $\mathbb{E}$ is a (nice) way to denote an expected value.
+
+Now we can state a likelihood:
+\begin{equation}
+L(u, t)  = \Pr(X=k \mid u, t) & = &\frac{(2ut)^k e^{-2ut}}{k!}
+\end{equation}
+where the feasible range of the parameters is $0\leq u \leq \infty$ and $0\leq t \leq \infty$.
+We could even fill in 5 for $k$ to get
+\begin{equation}
+L(u, t)  = \Pr(X=5 \mid u, t) & = &\frac{1}{120}(2ut)^5 e^{-2ut} \label{likeUT}
+\end{equation}
+If we chose, we could try to solve for the maximum liklihood estimates of $u$ and $t$
+here.
+As we discussed in class, we'd run right into problems with
+non-identifiability (see \url{https://en.wikipedia.org/wiki/Identifiability}):
+$u$ and $t$ only occur in the likelihood equation in the product $ut$.
+So the data might prefer some value for $ut$ to take, but we still wouldn't be
+able to learn about the value of $u$ alone.
+In fact the non-identifiability is so extreme in this case that any value for $u$ 
+ other than 0 will give us the same likelihood.
+So we can't learn {\em anything} that we didn't already know about $u$.
+
+In this case it probably won't surprise you to learn that the MLE for the product
+    $2ut$ is 5 (see the appendix \ref{appUT} for a derivation).
+But we can get that by setting $u=2.5$ and $t=1$ or $u=2.5\time10^{-10}$ and $t=10^{10}$
+or any other pair of values on the hyperbola defined by $2ut=5$.
+
+\subsection{Modeling population size}
+Aside from being able to astound friends with the fun fact about how many 
+generations ago your maternal lineage shares and ancestor with JKK, it
+is not clear that you'd be all that interest in estimating $t$.
+If we'd sampled another couple of people, we'd (probably) get a different estimate
+for $ut$, and we often want to estimate parameters that have some generality
+about a part of nature.
+
+So perhaps it is more sensible to ask whether or not we can learn something about
+the size of the human population from our data.
+To make (easy) progress we'd need to make some simplifying assumptions.
+The easiest model of formation of the next generation of individuals is just a model
+of non-overlapping generations with random reproduction.
+We want a model that connects the size of a population to a probability statement
+about time to the MRCA for two randomly selected gene copies.
+
+\subsubsection{intutition behind the coalescent}
+Clever population geneticists realized that it was easier to make this model if
+we look backward and think about the question: ``if I've selected your 
+mitochondrial genome and JKK's, then that is the probability that the
+first generation that the two share a mom was generation $g$?''
+
+We recall from high school biology that the mitochondrion (1) is the powerhouse of
+the cell, and (2) is inherited maternally.\footnote{which is not quite true: \url{https://www.ncbi.nlm.nih.gov/pubmed/12192017}}
+That is why we are just thinking about sharing a mom.
+
+The most naive model just says that if there are $N$ potential mom's in a generation,
+then the chance that two randomly chosen individuals share a mom in 
+the previous generation is simply $1/N$.
+So,
+$$\Pr(g=1\mid N) = \frac{1}{N} \mbox{ and so } \Pr(g>1\mid N) = 1- \frac{1}{N} $$
+The jargon for ``sharing an ancestor'' is called a coalescence event.
+If the population size is constant (and reproduction is random) then
+the probability of coalescence of two randomly selected gene copies in each generation is $1/N$ and the probability of failure to coalesce in that generation is $1- \frac{1}{N}$.
+
+So, what is the chance that the most recent shared member of the maternal lineage is
+2 generations ago?  
+Well that means ``no shared mom, but a shared grandmom'' so:
+$$\Pr(g=2\mid N) = \left(1 - \frac{1}{N}\right)\left(\frac{1}{N}\right)$$
+In general the form is
+$$\Pr(G=g\mid N) = \left(1 - \frac{1}{N}\right)^{g-1}\left(\frac{1}{N}\right)$$
+(which our modeling browsing tells us is the beautiful 
+\href{https://en.wikipedia.org/wiki/Geometric_distribution}{geometric distribution}).
+
+\subsubsection{the continuous-time version  of the coalescent that we actually use}
+It turns out that even if we use a more realistic model of reproduction (with overlapping generations and realistic numbers of offspring/parent, {\em etc.})
+that we can get decent approximations of the time to common ancestor in 
+our situation using:
+\begin{eqnarray}
+    \Pr(t\mid N) & = & \left(\frac{1}{N}\right)e^{-\frac{t}{N}}
+\end{eqnarray}
+where $t$ is the generation expressed as a continuous variable.
+This is the even more beautiful \href{https://en.wikipedia.org/wiki/Exponential_distribution}{exponential distribution}.
+As wikipedia notes, it is the ``continuous analogue'' of the
+geometric distribution. 
+It gives a probability density function for the waiting time for the first
+    event to occur when the events occur stochastically but 
+    at some constant rate (here $1/N$)
+while the geometric gives us a probability distribution 
+    on the count of how many trials before the first success (when 
+    you have repeated trials with the same probability of success on each trial).
+
+Both distributions give waiting times. 
+It is easier to think about discrete variables (and it might
+    make more sense to think about a discrete number of generations).
+Nevertheless, it is going to be easier to use the exponential.
+In the next step, we
+    are going to try to think about modeling how many mutations we'd see
+    when drawing from a population when we don't know the time to MRCA.
+That will entail summing over all possible times from 0 to inifity.
+An integration is usually easier than infinite sums.
+So we frequently use continuous approximations of processes that we might
+    occur to as as being discrete.
+
+\subsubsection{Connecting the population size to our data}
+We started this section by noting that we might not care about $t$, but be 
+more intested in $N$.
+
+\appendix
+\section{Deriving the MLE of the product $ut$}\label{appUT}
+We noted the fact that $ut$ only occur as a product, so
+lets work with the product and call it $\nu=2ut$.
+Recall the recipe is to find the derivative with respect to the parameter(s),
+and find the parameter value that makes that derivative 0, and 
+that we usually find it easier to do this on the log scale.
+We'll start with Equation (\ref{likeUT}):
+\begin{eqnarray*}
+L(u, t) = \Pr(X=5 \mid u, t) & = &\frac{1}{120}(2ut)^5 e^{-2ut} \\
+& = &\frac{1}{120}(\nu)^5 e^{-\nu} \\
+\ln L(\nu) & = & \ln{(1/120)} + 5\ln\nu - \nu\\
+\frac{d \ln L(\nu)}{d \nu} & = & \frac{5}{\nu} - 1 \\
+\frac{5}{\hat{\nu}} - 1 & = & 0 \\
+5 & = & \hat{\nu} 
+\end{eqnarray*}
+
+\end{document}
+
