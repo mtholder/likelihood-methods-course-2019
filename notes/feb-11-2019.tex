@@ -170,12 +170,12 @@ $$\Pr(G=g\mid N) = \left(1 - \frac{1}{N}\right)^{g-1}\left(\frac{1}{N}\right)$$
 \subsubsection{the continuous-time version  of the coalescent that we actually use}
 It turns out that even if we use a more realistic model of reproduction (with overlapping generations and realistic numbers of offspring/parent, {\em etc.})
 that we can get decent approximations of the time to common ancestor in 
-our situation using:
+our situation using the probability density:
 \begin{eqnarray}
-    \Pr(t\mid N) & = & \left(\frac{1}{N}\right)e^{-\frac{t}{N}}
+    f(t\mid N) & = & \left(\frac{1}{N}\right)e^{-\frac{t}{N}}
 \end{eqnarray}
 where $t$ is the generation expressed as a continuous variable.
-This is the even more beautiful \href{https://en.wikipedia.org/wiki/Exponential_distribution}{exponential distribution}.
+This is the (even more beautiful) \href{https://en.wikipedia.org/wiki/Exponential_distribution}{exponential distribution}.
 As wikipedia notes, it is the ``continuous analogue'' of the
 geometric distribution. 
 It gives a probability density function for the waiting time for the first
@@ -200,6 +200,35 @@ So we frequently use continuous approximations of processes that we might
 \subsubsection{Connecting the population size to our data}
 We started this section by noting that we might not care about $t$, but be 
 more intested in $N$.
+But if we want to learn about $N$ we need it to be in the likelihood equation.
+
+As JKK pointed out, we frequently use the law of total probability to
+calculate the probability of an event when we can figure out how
+to express it's probability only in terms of some additional information.
+
+In our case we had a likelihood in terms of $u$ and $t$, but we want to focus 
+on $u$ and $N$ instead.
+Our brief interlude into coalescent theory gave us some insight into the waiting time
+to the MRCA, but we always need to make a probability statement about the
+form that our data takes when we use likelihood.
+Fortunately, we know about $\Pr(X=k \mid u, t)$ and we know about the probability
+distribution of waiting times $t$ to the MRCA, so we can combine them.
+
+The law of total probability (when conditioning on a real, continuous variable is):
+\begin{equation}
+\Pr(A) & = & \int_{-\infty}^{\infty}\Pr(A\mid B)f(B)dB
+\end{equation}
+
+Applying this to our problem:
+\begin{eqnarray}
+L(u, N)  = \Pr(X=k \mid u, N) & = & \int_{0}^{\infty} \Pr(X=k \mid u, t) f(t\mid N) dt \\
+ & = & \int_{0}^{\infty} \left(\frac{(2ut)^k e^{-2ut}}{k!} \right)\left(\frac{1}{N}\right) e^{-t/N}dt \label{toughIntegral}
+\end{eqnarray}
+where we've set the lower bound of the integration to be 0 because time to MRCA can't be
+negative.
+This is where JKK encouraged you to use Wolfram Alpha (\url{https://www.wolframalpha.com/})
+for help in integrating.
+I encourage that (but see appendix \ref{deriveTheta})
 
 \appendix
 \section{Deriving the MLE of the product $ut$}\label{appUT}
@@ -218,5 +247,39 @@ L(u, t) = \Pr(X=5 \mid u, t) & = &\frac{1}{120}(2ut)^5 e^{-2ut} \\
 5 & = & \hat{\nu} 
 \end{eqnarray*}
 
+\section{The tricky integral}
+\label{deriveTheta}
+Equation (\ref{toughIntegral}) said:
+\begin{eqnarray*}\Pr(X=k \mid u, N) & = & \int_{0}^{\infty} \left(\frac{(2ut)^k e^{-2ut}}{k!} \right)\left(\frac{1}{N}\right) e^{-t/N}dt
+\end{eqnarray*}
+I'm not going to derive this, as it is beyond me.
+But I'll sketch how you can make progress.
+First note that (with respect to the integration, not the larger likelihood problem)
+$u$ and $k$ and $N$ are all constants.
+Integration is usually easier if we move the constants out front.
+But we can only do that for coefficients that are entirely constant (don't have $t$ 
+in our case, becase we are integrating over $dt$), so:
+\begin{eqnarray*}
+\int_{0}^{\infty} \left(\frac{(2ut)^k e^{-2ut}}{k!} \right)\left(\frac{1}{N}\right) e^{-t/N}dt 
+& = & \int_{0}^{\infty} \left(\frac{(2u)^k}{k!}\right) t^ke^{-2ut} \left(\frac{1}{N}\right) e^{-t/N} dt \\
+& = & \int_{0}^{\infty} \left(\frac{(2u)^k}{N(k!)}\right) t^ke^{-2ut} e^{-t/N} dt \\
+& = & \left(\frac{(2u)^k}{N(k!)}\right) \int_{0}^{\infty}  t^ke^{-2ut - (t/N)} dt \\
+& = & \left(\frac{(2u)^k}{N(k!)}\right) \int_{0}^{\infty}  t^ke^{-\frac{2uN - 1}{N} t} dt \\
+& = & \left(\frac{(2u)^k}{N(k!)}\right) \int_{0}^{\infty}  t^ke^{-C t} dt \\
+\end{eqnarray*}
+where $C=\frac{2uN - 1}{N}$.
+It'll be easier to look up $ \int_{0}^{\infty}  t^ke^{-C t} dt$ where $k$ is a non-negative
+integer and $C$ is a positive real number using Wolfram Alpha or some book than it would be
+to search for something that looks like Equation (\ref{toughIntegral}).
+
+In fact Wolfram Alpha give you the result shown at:
+\url{https://www.wolframalpha.com/input/?i=integrate+(x%5Ek+exp%5B-C+x%5D)+dx+from+0+to+infinity}
+
+The part of the solution that says ``$\mbox{Re}(k) > - 1 \land \mbox{Re}(C) > 0$''
+means ``when $k$ is a real number greater than -1 and C is a positive real number''
+fortunately for us, both of those hold for our problem.
+So the solution is what is shown prior to that qualification about the domain, namely:
+
+$$ \int_{0}^{\infty}  t^ke^{-C t} dt = C^{-k-1}\Gamma(k+1)$$
 \end{document}
 
