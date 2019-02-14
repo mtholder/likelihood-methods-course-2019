@@ -221,14 +221,68 @@ The law of total probability (when conditioning on a real, continuous variable i
 
 Applying this to our problem:
 \begin{eqnarray}
-L(u, N)  = \Pr(X=k \mid u, N) & = & \int_{0}^{\infty} \Pr(X=k \mid u, t) f(t\mid N) dt \\
+L(u, N)  = \prod_{i=1}^n  & = & \int_{0}^{\infty} \Pr(X=k \mid u, t) f(t\mid N) dt \\
  & = & \int_{0}^{\infty} \left(\frac{(2ut)^k e^{-2ut}}{k!} \right)\left(\frac{1}{N}\right) e^{-t/N}dt \label{toughIntegral}
 \end{eqnarray}
 where we've set the lower bound of the integration to be 0 because time to MRCA can't be
 negative.
 This is where JKK encouraged you to use Wolfram Alpha (\url{https://www.wolframalpha.com/})
 for help in integrating.
-I encourage that (but see appendix \ref{deriveTheta})
+That is a good idea (but do take a look at appendix \ref{deriveTheta}).
+
+We find that:
+\begin{eqnarray}
+L(u, N)  = \frac{(2uN)^k}{(2uN + 1)^{k+1}}
+\end{eqnarray}
+Once again we see that our two parameters are entangled and we have a case of non-identifiability.
+Whenever $N$ shows up in the likelihood it is being multiplied by $u$, so we can't hope to 
+have the data separate the 2 parameters.
+
+Population geneticists throw up their hands at this point and settle for estimating a mutation-rate scaled population size:
+$$\theta = 2uN.$$
+
+Making that substitution and going through our recipe for finding the maximum likelihood estimator:
+\begin{eqnarray}
+L(\theta)  & = & \frac{\theta^k}{(\theta + 1)^{k+1}} \\
+\ln L(\theta)  & = & k\ln\theta - (k+1) \ln(\theta + 1) \\
+\frac{d\ln L(\theta)}{d\theta} & = & \frac{k}{\theta} - \frac{k + 1}{\theta + 1} \\
+\frac{k}{\hat{\theta}} - \frac{k + 1}{\hat{\theta + 1}} & = & 0 \\ 
+\frac{k}{\hat{\theta}} & = &  \frac{k + 1}{\hat{\theta + 1}} \\
+k\hat{\theta} + k & = & k\hat{\theta} + \hat{\theta} \\
+k & = & \hat{\theta}
+\end{eqnarray}
+Once again, we find that the MLE is sort of the obvious answer, but it is still
+useful to work in the likelihood framework.
+We could calculate the log-likelihood at the MLE and then find
+the values of $\theta$ that have $\ln L$ values of 1.92 lower than the maximum
+to get a nice interval estimate.
+
+\section{Exteding to richer data}
+What if we knew that 2 changes occurred along the line from the MRCA to you and 3 occurred 
+on the lineage leading to JKK's mitochondrion?
+
+Would this change our estimate of the population size?
+Let's call this representation of the data $Y$ to keep from getting confused with the previous
+    example.
+So previously the data was $X=5$, and now the data is the vector $Y = [y_1=2, y_2=3]$.
+
+Assuming evolution on the 2 branches of the genealogy is independent:
+\begin{eqnarray}
+\Pr(Y \mid u, N) & = & \prod_{i=1}^{n} \Pr(y_i \mid u, N)
+\end{eqnarray}
+where $n$ is the sample size (2 when we have 2 branches).
+Conceptually the model is the same but the expected number of substitutions
+    is just $ut$ along each branch instead of $2ut$ across the pair branches.
+
+
+Making the new version of Equation (\ref{toughIntegral})
+\begin{eqnarray}
+L(u, N)  = \Pr(Y \mid u, N)  & = &  \int_{0}^{\infty} \Pr(Y \mid u, t) f(t\mid N) dt \\
+& = &  \int_{0}^{\infty} \left[ \prod_{i=1}^{n} \right] \Pr(y_i \mid u, N) f(t\mid N)  dt\\
+& = &  \int_{0}^{\infty} \left[ \prod_{i=1}^{n}\left(\frac{(ut)^{y_i} e^{-ut}}{y_i!} \right)\right] \left(\frac{1}{N}\right) e^{-t/N}dt \\
+\end{eqnarray}
+
+
 
 \appendix
 \section{Deriving the MLE of the product $ut$}\label{appUT}
@@ -246,6 +300,9 @@ L(u, t) = \Pr(X=5 \mid u, t) & = &\frac{1}{120}(2ut)^5 e^{-2ut} \\
 \frac{5}{\hat{\nu}} - 1 & = & 0 \\
 5 & = & \hat{\nu} 
 \end{eqnarray*}
+
+
+
 
 \section{The tricky integral}
 \label{deriveTheta}
@@ -285,7 +342,6 @@ For a positive integer argument $m$ it is an offset factorial $\Gamma(m) = (m-1)
 So in our solution $\Gamma(k+1) = k!$.
 
 Substituting in for C and remembering the constant coefficient for the integral we have:
-
 \begin{eqnarray*}
 \Pr(X=k \mid u, N) & = & \left(\frac{(2u)^k}{N(k!)}\right) \int_{0}^{\infty}  t^ke^{-C t} dt \\
  & = & \left(\frac{(2u)^k}{N(k!)}\right)C^{-k-1}\Gamma(k+1) \\
@@ -294,5 +350,10 @@ Substituting in for C and remembering the constant coefficient for the integral 
  & = & \left(\frac{(2u)^k}{N}\right)\left(\frac{N^{k+1}}{(2uN + 1)^{k+1}}\right)\\
  & = & \frac{(2u)^k N^k}{(2uN + 1)^{k+1}} \\
  & = & \frac{(2uN)^k}{(2uN + 1)^{k+1}} \\
+\end{eqnarray*}\
+
+
+
+
 \end{document}
 
