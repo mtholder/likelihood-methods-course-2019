@@ -112,7 +112,7 @@ here.
 As we discussed in class, we'd run right into problems with
 non-identifiability (see \url{https://en.wikipedia.org/wiki/Identifiability}):
 $u$ and $t$ only occur in the likelihood equation in the product $ut$.
-So the data might prefer some value for $ut$ to take, but we still wouldn't be
+So the data might prefer some value for $ut$, but we still wouldn't be
 able to learn about the value of $u$ alone.
 In fact the non-identifiability is so extreme in this case that any value for $u$ 
  other than 0 will give us the same likelihood.
@@ -143,11 +143,10 @@ about time to the MRCA for two randomly selected gene copies.
 Clever population geneticists realized that it was easier to make this model if
 we look backward and think about the question: ``if I've selected your 
 mitochondrial genome and JKK's, then that is the probability that the
-first generation that the two share a mom was generation $g$?''
-
-We recall from high school biology that the mitochondrion (1) is the powerhouse of
-the cell, and (2) is inherited maternally.\footnote{which is not quite true: \url{https://www.ncbi.nlm.nih.gov/pubmed/12192017}}
-That is why we are just thinking about sharing a mom.
+first generation that those mitochondria come from the woman was generation $g$?''
+We recall from high school biology that the mitochondrion is (1) the powerhouse of
+the cell, and (2) inherited maternally.\footnote{which is not quite true: \url{https://www.ncbi.nlm.nih.gov/pubmed/12192017}}
+That is why we are just thinking about sharing a female ancestor.
 
 The most naive model just says that if there are $N$ potential mom's in a generation,
 then the chance that two randomly chosen individuals share a mom in 
@@ -192,7 +191,7 @@ Nevertheless, it is going to be easier to use the exponential.
 In the next step, we
     are going to try to think about modeling how many mutations we'd see
     when drawing from a population when we don't know the time to MRCA.
-That will entail summing over all possible times from 0 to inifity.
+That will entail summing over all possible times from 0 to infinity.
 An integration is usually easier than infinite sums.
 So we frequently use continuous approximations of processes that we might
     occur to as as being discrete.
@@ -246,8 +245,8 @@ Making that substitution and going through our recipe for finding the maximum li
 L(\theta)  & = & \frac{\theta^k}{(\theta + 1)^{k+1}} \\
 \ln L(\theta)  & = & k\ln\theta - (k+1) \ln(\theta + 1) \\
 \frac{d\ln L(\theta)}{d\theta} & = & \frac{k}{\theta} - \frac{k + 1}{\theta + 1} \\
-\frac{k}{\hat{\theta}} - \frac{k + 1}{\hat{\theta + 1}} & = & 0 \\ 
-\frac{k}{\hat{\theta}} & = &  \frac{k + 1}{\hat{\theta + 1}} \\
+\frac{k}{\hat{\theta}} - \frac{k + 1}{\hat{\theta} + 1} & = & 0 \\ 
+\frac{k}{\hat{\theta}} & = &  \frac{k + 1}{\hat{\theta} + 1} \\
 k\hat{\theta} + k & = & k\hat{\theta} + \hat{\theta} \\
 k & = & \hat{\theta}
 \end{eqnarray}
