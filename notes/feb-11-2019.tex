@@ -30,7 +30,7 @@ notes from the week of Feb.~11, 2019 \\
 
 \subsection{The data}
 We do some sequencing of mitochondrial DNA sequences and find that your sequence
-differs from JKK's sequence at 5 sites, so $x=5$.
+differs from JKK's sequence at 5 sites, so $X=5$.
 
 What can we learn from this?\footnote{Ideally we'd think of a question, and then
 design the study and collect the data, but here we're thinking about the process
@@ -48,19 +48,18 @@ of your mitochondrial genome and John's.
 \subsection{the likelihood}
 As always, the likelihood of our model is the probability of seeing a value of the
     random variable that represents our data set ($X$) which is equal to
-    the data we actually saw $5$, conditional on our model being true.
+    the data we actually saw ($5$) conditional on our model being true.
 We want $\Pr(X=5\mid\mbox{ some model})$, so we need to think about the model.
 
 \subsection{modeling mutations}
 We recall from intro bio that DNA polymerase is pretty good, which is to say 
 that mutations are pretty rare.
-
 It also seems reasonable to think of them as not just rare, but fairly independent of 
 each other.
 At least we don't think that if your mother had a mutation event in her mitochondrial 
    genome that it probably has a large effect on the probability that you will experience a new mutational event.
 
-So we could model them as a rare event that happens at some constant rate with the
+So we could model mutations as a rare event that happens at some constant rate with the
     events being independent of each other.
 ``Rare'' is important because it lets us be somewhat confident that our
     observation of 5 {\em differences} between your sequence and JKK's
@@ -85,18 +84,19 @@ Specifically if $\lamda$ is the expected number of events, then:
 \begin{equation}
     \Pr(X=k\mid \lambda) = \frac{\lambda^k e^{-\lambda}}{k!}
 \end{equation}
-That is nice, but we were talking about rates and then find that
-the model is parameterized in terms of the expected number of events.
+That is nice.
+However, we were talking about rates and suddenly we've found a model
+that is parameterized in terms of the expected number of events.
 Recall (or see the \href{https://en.wikipedia.org/wiki/Expected_value}{Wikipedia article on expected value}) that the expected value is basically the average value over
 infinitely many trials.
 We only have 1 trial, so how do we get the expected value?
 
-Well if our process has constant rate $u$ (mutations per generation) and run for
-$t$ generations from the MRCA to you and $t$ generations from the MRCA to JKK, then we say
+If our process has constant rate $u$ (mutations per generation) and runs for
+$t$ generations from the MRCA to you and $t$ generations from the MRCA to JKK, then we can see that:
 \begin{equation}
- \mathbb{E}(\mbox{\# mutations)} = 2 u t = \lamba \mbox{ (in the Poisson)}
+ \mathbb{E}(\mbox{\# mutations)} = 2 u t = \lambda \mbox{ (in the Poisson)}
 \end{equation}
-were the funky $\mathbb{E}$ is a (nice) way to denote an expected value.
+where the funky $\mathbb{E}$ is a (nice) way to denote an expected value.
 
 Now we can state a likelihood:
 \begin{equation}
@@ -232,7 +232,7 @@ That is a good idea (but do take a look at appendix \ref{deriveTheta}).
 
 We find that:
 \begin{eqnarray}
-L(u, N)  = \frac{(2uN)^k}{(2uN + 1)^{k+1}}
+L(u, N)  = \frac{(2uN)^k}{(2uN + 1)^{k+1}} \label{simplestL}
 \end{eqnarray}
 Once again we see that our two parameters are entangled and we have a case of non-identifiability.
 Whenever $N$ shows up in the likelihood it is being multiplied by $u$, so we can't hope to 
@@ -323,9 +323,19 @@ The modification to the likelihood is straightforward: now the parameters
 get subscripts, too!
 \begin{eqnarray}
 L(u_1, u_2, N)  = \Pr(Y \mid u_1, u_2, N)  & = &
-  \int_{0}^{\infty} \left[ \prod_{i=1}^{n}\left(\frac{(u_it)^{y_i} e^{-u_it}}{y_i!} \right)\right] \left(\frac{1}{N}\right) e^{-t/N}dt 
+  \int_{0}^{\infty} \left[ \prod_{i=1}^{n}\left(\frac{(u_it)^{y_i} e^{-u_it}}{y_i!} \right)\right] \left(\frac{1}{N}\right) e^{-t/N}dt \label{twoRateL}
 \end{eqnarray}
 Appendix \ref{messyTricky} goes through the gory details.
+
+You end up with 2 estimators for $\hat{\theta_1} = y_1 $ and $\hat{\theta_2} = y_2$ just 
+as you would hope/expect.
+Crucially if you want to test the one-rate model vs the two rate-model, you have to use
+the equation (\ref{twoRateL}) for your likelihood calculation.
+
+The likelihood calculated on based on the sum (and shown in equation \ref{simplestL}) 
+has different constants from the one in Equation \ref{twoRateL}, because
+the two forms of the data $X=k=5$ vs $Y=[y_1=2, y_2=3]$ are slightly different.
+We can only compare likelihoods when calculated on the same representation of the data!
 
 \newpage
 \appendix
@@ -455,5 +465,6 @@ y_1 y_2 N \hat{u_1} + (y_1 _+ y_2 + 1) N \hat{u_1} & = & y_1 y_2 N \hat{u_1} + (
 \hat{u_1} & = & \frac{y_1}{N}
 \end{eqnarray*}
 In otherwords our best estimate of $Nu_1$ is $y_1$, just as we would have guessed.
+
 \end{document}
 
