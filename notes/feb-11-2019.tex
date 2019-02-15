@@ -424,8 +424,36 @@ $\Pr(Y=[y_1, y_2] \mid u_1, u_2, N)$ is equal to:
 \frac{\prod_{i=1}^{n}\left[u_i^{y_i}\right]}{N\prod_{i=1}^{n} y_i!} \left(\frac{N}{Nw + 1}\right)^{k+1} k! \\
 & = &
 \left[\prod_{i=1}^{n}\left(\frac{u_i^{y_i}}{y_i!}\right)\right] \left(\frac{N^k}{(Nw + 1)^{k+1}}\right) k! \\
-& = &
-\left[\prod_{i=1}^{n}\left(\frac{N^{y_i}u_i^{y_i}}{(Nw + 1)y_i!}\right)\right] \left(\frac{k!}{(Nw + 1)}\right) \\
 \end{eqnarray*}
+Moving to the log scale, and collapsing all terms that don't depend on $u_1, u_2$ or $N$ into constant $G$, and expanding $w$ to $u_1 + u_2$,  we get:
+\begin{eqnarray*}
+\ln L & = & G + \left(\sum_{i=1}^n y_i\ln(u_i)\right) + k\ln N - (k+1)\ln(Nu_1 + Nu_2 + 1)  \\
+\frac{d \ln L}{d u_1} & = & \frac{y_1}{u_1} - \frac{(k+1)N}{Nu_1 + N u_2 + 1} \\
+ \frac{y_1}{\hat{u_1}} & -= & \frac{(k+1)N}{N\hat{u_1} + N u_2 + 1} \\
+ y_1 N\hat{u_1} + y_1 N u_2 + y_1 & = & k N \hat{u_1} + N \hat{u_1} \\
+\end{eqnarray*}
+recalling that $k= y_1 + y_2$:
+\begin{eqnarray*}
+ y_1 N u_2 + y_1 & = & k N \hat{u_1} + N \hat{u_1} - y_1 N\hat{u_1} \\
+ y_1 (N u_2 + 1) & = & (y_2 + 1) N \hat{u_1} \\
+ \hat{u_1} & = & \frac{ y_1 (N u_2 + 1)}{(y_2 + 1) N }
+\end{eqnarray*}
+Similarly:
+\begin{eqnarray*}
+ \hat{u_2} & = & \frac{ y_2 (N u_1 + 1)}{(y_1 + 1) N }
+\end{eqnarray*}
+The global maximum likelihood estimator is when both $u_1$ and $u_2$ are maximized.
+So we can swap in $\hat{u_2}$ for ${u_2}$ in the equation for $ \hat{u_1}$:
+\begin{eqnarray*}
+\hat{u_1} & = & \frac{ y_1 \left(N \frac{ y_2 (N \hat{u_1} + 1)}{(y_1 + 1) N } + 1\right)}{(y_2 + 1) N } \\
+(y_2 + 1) N \hat{u_1} & = & y_1 \left(N \frac{ y_2 (N \hat{u_1} + 1)}{(y_1 + 1) N } + 1\right) \\
+& = & y_1 \left(\frac{ y_2 (N \hat{u_1} + 1)}{(y_1 + 1) } + 1\right) \\
+& = & y_1 \left(\frac{ y_2 (N \hat{u_1}+ 1) + y_1 + 1}{(y_1 + 1) }\right) \\
+(y_1 + 1)(y_2 + 1) N \hat{u_1} & = & (y_2 (N \hat{u_1} + 1) + y_1 + 1) y_1 \\
+y_1 y_2 N \hat{u_1} + (y_1 _+ y_2 + 1) N \hat{u_1} & = & y_1 y_2 N \hat{u_1} + (y_2 + y_1 + 1) y_1 \\
+(y_1 _+ y_2 + 1) N \hat{u_1} & = &  (y_2 + y_1 + 1) y_1 \\
+\hat{u_1} & = & \frac{y_1}{N}
+\end{eqnarray*}
+In otherwords our best estimate of $Nu_1$ is $y_1$, just as we would have guessed.
 \end{document}
 
