@@ -1,0 +1,81 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage{amssymb}
+%\usepackage[nomarkers]{endfloat}
+\usepackage{natbib}
+\usepackage{setspace}
+\usepackage{wasysym}
+\usepackage{wrapfig}
+
+\textwidth = 7 in
+\textheight = 9 in
+\oddsidemargin = -0.5 in
+\evensidemargin = -0.5 in
+\topmargin = 0.0 in
+\headheight = 0.0 in
+\headsep = 0.0 in
+\parskip = 0.1in
+\parindent = 0in
+\renewcommand{\Pr}{\mathbb{P}}
+\usepackage{paralist}
+\usepackage{url}
+\newcommand{\href}[2]{\url{#2}}
+\usepackage{hyperref}
+\hypersetup{backref,   linkcolor=blue, citecolor=red, colorlinks=true, hyperindex=true}
+\begin{document}
+
+\section*{connecting mutation rate to a probability of mutation}
+For closely related sequences, we can ignore ``multiple hits'' (two mutations to the same
+site that result in the number of differences being less than the number of mutations).
+
+If we have a mutation rate we can use the Poisson where $\lambda = ut$.
+\begin{eqnarray*}
+    \Pr(\mbox{a difference} \mid u, t) \approx \Pr(>0 \mbox{ mutations} \mid u, t) = p
+    & = & 1 - \Pr(0 \mbox{ mutations} \mid u, t) \\
+    & = & 1 - e^{- ut}
+\end{eqnarray*}
+
+
+
+\section*{Estimating $p$ from data}
+If we have 2 and 3 mutations on sister branches (same time to the MRCA) and a total of 
+$M$ sites.
+For $n$ branches with a vector $y$ changes on each, and $k= \sum y$
+\begin{eqnarray*}
+   L(p) =  \Pr(y_1=2, y_2=3 \mid p)
+   & = & \prod_{i=1}^n {M \choose y_i} p^{y_i}(1-p)^{M-y_i} \\ 
+   & = & p^{k}(1-p)^{nM-k} \left(\prod_{i=1}^n {M \choose y_i} \right)  \\ 
+   \ln L(p) & = & k\ln(p) + (nM - k)\ln(1-p) + \sum_{i=1}^n \ln {M \choose y_i} \\
+   \frac{d\ln L(p)}{dp} & = & \frac{k}{p} - \frac{nM - k}{1-p}\\
+   \frac{k}{\hat{p}} & = & \frac{nM - k}{1-\hat{p}} \\
+   k - k\hat{p} & = & nM\hat{p} - k\hat{p} \\
+   \frac{k}{nM} & = & \hat{p}
+\end{eqnarray*}
+
+
+\section*{conditioning on $N$ instead of $t$}
+If we want to estimate the population size, we can integrate over $t$:
+\begin{eqnarray*}
+\Pr(>0 \mbox{ mutations} \mid u, N) & = & \int_0^\infty\left(1 - e^{- ut}\right)\frac{1}{N}e^{-t/N} dt\\
+& = & \int_0^\infty\frac{1}{N}e^{-t/N} - \frac{1}{N}e^{- ut-t/N} dt \\
+& = & \left.-e^{-t/N}\right|_{t=0}^{t=\infty} - \frac{1}{N}\int_0^\infty e^{-\frac{(Nu + 1)t}{N}} dt \\
+& = & \left.-e^{-t/N}\right|_{t=0}^{t=\infty} + \left.\frac{1}{Nu + 1} e^{-\frac{(Nu + 1)t}{N}}\right|_{t=0}^{t=\infty} \\
+& = & \left(0 - (-1)\right) + \left(0 - \frac{1}{Nu + 1}\right) \\
+& = & 1 - \frac{1}{Nu + 1}
+\end{eqnarray*}
+
+Then, we could do something like:
+\begin{eqnarray*}
+1 - \frac{1}{\widehat{Nu} + 1} & = & \hat{p}\\
+\frac{\widehat{Nu}}{\widehat{Nu} + 1} & = & \hat{p}\\
+\widehat{Nu} & = & \hat{p}\widehat{Nu} + \hat{p}\\
+\widehat{Nu} - \hat{p}\widehat{Nu} & = & \hat{p}\\
+\widehat{Nu} & = & \frac{\hat{p}}{1 - \hat{p}} \\
+& = & \frac{k/nM}{1 - k/nM} = \frac{k}{nM-k}
+\end{eqnarray*}
+to convert our MLE of $p$ to an MLE of $Nu$.
+
+
+
+\end{document}
+
