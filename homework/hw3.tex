@@ -6,7 +6,7 @@
 \usepackage{setspace}
 \usepackage{wasysym}
 \usepackage{wrapfig}
-
+\pagestyle{empty}
 \textwidth = 7 in
 \textheight = 9 in
 \oddsidemargin = -0.5 in
@@ -23,6 +23,63 @@
 \usepackage{hyperref}
 \hypersetup{backref,   linkcolor=blue, citecolor=red, colorlinks=true, hyperindex=true}
 \begin{document}
+\section*{Homework \#3} (due Monday, Feb 25th)
+
+(1) A snail species has two different morphs, left-coiled and right-coiled. 
+A researcher does a large experiment measuring the escape behavior of snails when confronted with a predator. 
+She classifies each as `run' or `hide' (pull into shell).
+50\% of the snail population exhibit the run behavior.
+Among runners, 25\% are left-coiled.
+Among hiders, 60\% are left-coiled.
+Calculate the probability that a snail runs given that it is right-coiled. 
+
+
+\vskip 5em
+
+
+(2) Let's revisit the analysis of data on the number of substitutions on 
+two branches of a genealogy, where the two branches have the same time
+to the most recent common ancestor.
+We'll denote the data on counts of the number of changes is $y_1$ and $y_2$.
+Previously JKK worked through the case of using a Poisson distribution with an 
+expectation of $ut$ as a model for these data.
+He only used the number of sites with differences.
+
+Now imagine that we know the number of sites that we have sequence from. Call that total $M$.
+Since mutations are rare $M$ is typically much larger than $y_1 + y_2$.
+If we imagine that mutations are rare independent events that happen with the same 
+    rate at every site, then we can view the data on $y_1$ and $y_2$ as
+    given $M$ sites as samples from the binomial distribution.
+Let $p$ be the probability of a change at one site on a single branch.
+
+(a) What is the likelihood equation for $p$ given $y_1$, $y_2$, and $M$ trials?
+
+(c) What is the formula for the MLE, $\hat{p}$?
+
+(c) What is the MLE of $p$ if $y_1=2$, $y_2=3$, and $M=2000$?
+
+(d) What is the log-likelihood at that point?
+
+(e) Can you reject a null hypothesis that $p = 0.001$? (show the LRT test statisic and $df$)
+
+\vskip 2em
+
+(3) If you knew exactly where in the sequence of 2000 sites the 5 changes occurred, then
+you could calculate the probability without the binomial coefficient instead of the one
+you used in \#2b.
+If you used a likelihood equation without the binomial coefficient, you would get a 
+(Circle one answer for each part):
+\begin{compactenum}
+    \item[(a)] \textsc{Lower / Equal / Higher}\hskip 2em likelihood 
+    \item[(b)] \textsc{Lower / Equal / Higher}\hskip 2em log-likelihood
+    \item[(c)] \textsc{Lower / Equal / Higher}\hskip 2em estimate of $\hat{p}$
+    \item[(d)] \textsc{Lower / Equal / Higher}\hskip 2em LRT for the $H_0$ that $p=0.001$
+\end{compactenum}
+(compared to the values of these entities when you use a likelihood equation with the 
+binomial coefficient).
+
+
+\end{document}
 
 \section*{connecting mutation rate to a probability of mutation}
 For closely related sequences, we can ignore ``multiple hits'' (two mutations to the same
