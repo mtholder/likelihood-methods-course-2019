@@ -1,4 +1,15 @@
-library(plotly)
+qgamma(0.025, shape=6, rate=2.2)
+qgamma(0.975, shape=6, rate=2.2)
+
+s=0.01
+x=seq(s,10,by=s)
+b = 0.2
+plot(x, b*exp(-b*x), type="line", col="blue", ylim=c(0,1), xlab="nu", ylab="")
+lines(x, x^5*exp(-2*x), col="red")
+lines(x, dgamma(x, shape=6, rate=2.2), col="black")
+legend(6, .8, legend=c("prior", "likelihood", "posterior"),
+       col=c("blue", "red", "black"), lty=1:2, cex=0.8)
+
 # p = plot_ly(type='contour',  x=~volcano)
 nu = seq(0,12,by=.01)
 plot(nu, 5*log(nu), type="l", ylim=c(-5,15), ylab="5 ln(nu)", xlab="nu")

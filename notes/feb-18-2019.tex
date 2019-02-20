@@ -30,7 +30,104 @@ We worked through Bayes' rule and then talked about the difference
 between confidence intervals and Bayesian posterior probability
 statements (see \url{http://phylo.bio.ku.edu/biostats/bad_bean_counter.pdf})
 
-\section{Posterior distribution for $\nu$}
+\section{Posterior distribution for $\nu$}.
+We'll use $\nu = ut$, as the branch length in terms of the expected number of changes
+    over a branch in a genealogy.
+
+Back to our original example $X=5$ and the branch length from JKK to the MRCA and back to 
+you is $2\nu$.
+
+We assume that the Poisson describes the probability of any number of mutations given
+    the expected number
+In an ML context, you'd get $\hat{\nu} = 2.5$ and you could define a 95\% confidence interval
+    based on what values of $\nu$ give you log-likelihoods that are 1.92 lower than
+    the log-likelihood at $\nu = 2.5$.
+
+For a Bayesian inference of $\nu$, we start with Bayes' rule applied to this problem:
+\begin{eqnarray}
+f(\nu\mid X=5) = \frac{g(\nu)\Pr(X=5\mid \nu)}{\Pr(X=5)}
+\end{eqnarray}
+where $f(\nu\mid X=5)$ is the ``posterior probability density of $\nu$'' and
+$g(\nu)$ is the ``prior probability density of $\nu$.''
+Both are probability distributions, meaning that the integral
+of the density over
+the feasible range for $\nu$ (which is $0\leq\nu < \infty$) will be 1.
+
+\subsection{the prior}
+In a purely subjective Bayesian perspective we'd have to figure out
+    how to describe our prior beliefs.
+In practice, we often pick an analytically tractable distribution
+    that is close to what we want to express as our prior beliefs, while
+    still being easy to work with mathematically.
+
+Last week we saw that population genetics tells us the $t\sim\mbox{ Exponential}(\lambda=1/N)$ where $N$ is the effective population size.
+If we pretended that we knew the mutation rate for our locus (which
+is not terribly implausible as there is a lot of data about the rate
+of molecular evolution in mammalian mitochondrial genes), then
+perhaps our uncertainty about $\nu$ can be thought of as being 
+basically some exponential distribution.
+
+An exponentail distribution is just a special case of a Gamma distribution,
+where $\alpha=1$ and $\beta=\lambda$ when we are using the ``shape+rate'' parameterization of the \href{https://en.wikipedia.org/wiki/Gamma_distribution}{the Gamma distribution}.
+Wikipedia tells us that if $x\sim \mbox{Gamma}(\alpha, \beta)$ then:
+\begin{eqnarray}
+g(x \mid \alpha, \beta) &=& \frac{\beta^{\alpha}}{\Gamma(\alpha)}x^{\alpha - 1}e^{-\beta x} \\
+\mathbb{E}[x] & = & \frac{\alpha}{\beta} \\
+\mbox{Var}(x) & = & \frac{\alpha}{\beta^2}
+\end{eqnarray}
+
+
+So if we wanted to say our prior on $\nu$ is a fairly broad exponentail
+    distribution with a mean of 5 ($\lamba=\frac{1}{5}=0.2$ in the typical Exponential
+    notation or $\alpha=1,\beta=.2$ in our preferred notation for the Gamma).
+So, to be concrete:
+\begin{eqnarray}
+g(\nu \mid \alpha, \beta) &=& \frac{\beta^{\alpha}}{\Gamma(\alpha)}\nu^{\alpha - 1}e^{-\beta\nu} \\
+g(\nu \mid \alpha=1, \beta=0.2) &=& \frac{0.2}{\Gamma(1)}\nu^{0}e^{-0.2\nu} 
+\end{eqnarray}
+
+Recall that our expectated number of mutations in $\2\nu$ and our likelihood is Poisson:
+\begin{eqnarray}
+\Pr(X=5\mid \nu) &= & \frac{(2\nu)^5e^{-2\nu}}{5!}
+\end{eqnarray}
+
+The denominator of Bayes' rule is tough it is:
+\begin{eqnarray}
+\Pr(X=5) &= &\int_0^{\infty} \Pr(X=5\mid \nu)g(\nu) d\nu
+\end{eqnarray}
+Crucially it is is a constant -- it is the same for every value of $\nu$.
+So we'll just call it $K$
+
+So what is our posterior density?
+\begin{eqnarray}
+f(\nu\mid X=5) & = & \frac{g(\nu)\Pr(X=5\mid \nu)}{\Pr(X=5)} \\
+& = & \frac{\frac{0.2}{\Gamma(1)}\nu^{0}e^{-0.2\nu}\frac{(2\nu)^5e^{-2\nu}}{5!}}{K}\\
+& = & K_2 \nu^{0}e^{-0.2\nu}\nu^{5}e^{-2\nu} \\
+& = & K_2 \nu^{5}e^{-2.2\nu}
+\end{eqnarray}
+where $K_2$ is a constant that is just a product of all of the parts of
+the equation that don't depend on $\nu$.
+
+The key thing to recognize is that the shape of the density is just
+    the relative height as $\nu$ changes.
+That shape is determined by $\nu^{5}e^{-2.2\nu}$
+$K_2$ is the ``normalization constant'' that we'd have to multiple to 
+    every density so that the whole thing integrates to 1.
+Conveniently, the shape of the posterior that we derived is 
+    exactly the shape of a Gamma$(\alpha=6, \beta=2.2)$ distribution.
+That means that $K_2=2.2^6/\Gamma(6)$ (because that is the coefficient
+of the Gamma density, and the Gamma integrates to 1, too).
+
+So we can use {\tt qgamma(0.025, shape=6, rate=2.2)} and {\tt
+qgamma(0.975, shape=6, rate=2.2)}
+in R to find the values of $\nu$ that chop off the lower 
+and upper 2.5\% tails to get a
+credible interval.
+Most Bayesians use a slightly different Highest Posterior Density (HPD)
+interval, which is the smallest interval (on the $\nu$ axis) that integrates
+to 0.95.
+But these intervals would be quite similar for this problem.
+
 
 \section{Revisiting the time to MRCA from mutation counts}
 \subsection{the data}
