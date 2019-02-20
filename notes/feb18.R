@@ -1,14 +1,25 @@
-qgamma(0.025, shape=6, rate=2.2)
-qgamma(0.975, shape=6, rate=2.2)
+lci=qgamma(0.025, shape=6, rate=2.2)
+uci=qgamma(0.975, shape=6, rate=2.2)
 
 s=0.01
 x=seq(s,10,by=s)
 b = 0.2
-plot(x, b*exp(-b*x), type="line", col="blue", ylim=c(0,1), xlab="nu", ylab="")
+plot(x, dgamma(x, shape=1, rate=b), type="line", col="blue", ylim=c(0,1), xlab="nu", ylab="")
 lines(x, x^5*exp(-2*x), col="red")
 lines(x, dgamma(x, shape=6, rate=2.2), col="black")
 legend(6, .8, legend=c("prior", "likelihood", "posterior"),
        col=c("blue", "red", "black"), lty=1:2, cex=0.8)
+
+mle = 2.5
+mll = mle^5*exp(-2*mle)
+cll = mll/(exp(1.92))
+plot(x,  x^5*exp(-2*x), type="line", col="red", ylim=c(0,1), xlab="nu", ylab="")
+lines(x, dgamma(x, shape=6, rate=2.2), col="black")
+abline(h=cll, col="red", lty=3)
+abline(v= c(0.89651, 5.37317), col="red", lty=3)
+abline(v=c(lci, uci), col="black", lty=2)
+legend(6, .8, legend=c("likelihood" "posterior"),
+       col=c("blue", "black"), lty=1:2, cex=0.8)
 
 # p = plot_ly(type='contour',  x=~volcano)
 nu = seq(0,12,by=.01)
@@ -18,6 +29,7 @@ plot(nu, (5/nu)-2, type="l", ylim=c(-2,10), ylab="dlnL/dnu", xlab="nu")
 abline(h=0, lty=3)
 lines(nu, 5/nu, lty=2)
 abline(h=2, lty=2)
+abline(v=2, lty=2)
 plot(nu, -2*nu, type="l", ylim=c(-25,0), ylab="-2nu", xlab="nu")
 plot(nu, -2*nu, type="l", ylim=c(-25,0), ylab="-2nu", xlab="nu")
 plot(nu,  5*log(nu) -2*nu, type="l", ylim=c(-25,0), ylab="log(Pr(x=5|nu))", xlab="nu")

@@ -86,11 +86,13 @@ g(\nu \mid \alpha, \beta) &=& \frac{\beta^{\alpha}}{\Gamma(\alpha)}\nu^{\alpha -
 g(\nu \mid \alpha=1, \beta=0.2) &=& \frac{0.2}{\Gamma(1)}\nu^{0}e^{-0.2\nu} 
 \end{eqnarray}
 
+\subsection{the likelihood}
 Recall that our expectated number of mutations in $\2\nu$ and our likelihood is Poisson:
 \begin{eqnarray}
 \Pr(X=5\mid \nu) &= & \frac{(2\nu)^5e^{-2\nu}}{5!}
 \end{eqnarray}
 
+\subsection{the marginal likelihood}
 The denominator of Bayes' rule is tough it is:
 \begin{eqnarray}
 \Pr(X=5) &= &\int_0^{\infty} \Pr(X=5\mid \nu)g(\nu) d\nu
@@ -98,6 +100,7 @@ The denominator of Bayes' rule is tough it is:
 Crucially it is is a constant -- it is the same for every value of $\nu$.
 So we'll just call it $K$
 
+\subsection{the posterior}
 So what is our posterior density?
 \begin{eqnarray}
 f(\nu\mid X=5) & = & \frac{g(\nu)\Pr(X=5\mid \nu)}{\Pr(X=5)} \\
@@ -117,8 +120,17 @@ Conveniently, the shape of the posterior that we derived is
     exactly the shape of a Gamma$(\alpha=6, \beta=2.2)$ distribution.
 That means that $K_2=2.2^6/\Gamma(6)$ (because that is the coefficient
 of the Gamma density, and the Gamma integrates to 1, too).
+Figure \ref{plp} shows the prior, likelihood, and posterior for $\nu$
 
-So we can use {\tt qgamma(0.025, shape=6, rate=2.2)} and {\tt
+\begin{figure}[h]
+\hskip-1cm \includegraphics[scale=1]{images/poisson-gamma-conjugacy.png}
+\caption{Poisson likelihood (red - not a probability distribution over $\nu$),
+the Gamma$(\alpha=1, \beta=0.2)$ prior and Gamma$(\alpha=6, \beta=2.2)$}\label{plp}
+\end{figure}
+
+\subsection{a 95\% credible interval}
+Because the posterior is a nice analytically well-characterized distribution,
+we can use {\tt qgamma(0.025, shape=6, rate=2.2)} and {\tt
 qgamma(0.975, shape=6, rate=2.2)}
 in R to find the values of $\nu$ that chop off the lower 
 and upper 2.5\% tails to get a
@@ -128,6 +140,27 @@ interval, which is the smallest interval (on the $\nu$ axis) that integrates
 to 0.95.
 But these intervals would be quite similar for this problem.
 
+Figure \ref{cis} shows the likelihood with the 1.92 log drop (the maximized likelihood divided by $e^{1.92}$).
+The ML-based 95\% confidence interval is $0.87 < \nu <5.37$, while
+the Bayesian 95\% credible interval produces by cropping off 2.5\%
+from each tail is the statement that $\Pr(1.00<\nu<5.30 \mid X=5) = 0.95$
+using our prior.
+
+It is common for the 95\% credible interval to be a tiny bit smaller (more
+precise) than the 95\% confidence interval.
+Recall that the confidence interval is based on a recipe guaranteeing
+    95\% coverage that was designed before we look at the data.
+By fully exploiting prior information and conditioning our inference fully
+on the data, the Bayesian approach has a bit more power (at the cost of 
+having more inputs that it could be sensitive to).
+
+\begin{figure}[h]
+\hskip-1cm \includegraphics[scale=1]{images/dueling-cis.png}
+\caption{Likelihood and posterior. Confidence interval boundaries computed
+by the 1.92 $\ln$-likelihood drop method. Credible interval boundaries
+computed by the {\tt qgamma} method in R. }\label{cis}
+\end{figure}
+\end{document}
 
 \section{Revisiting the time to MRCA from mutation counts}
 \subsection{the data}
