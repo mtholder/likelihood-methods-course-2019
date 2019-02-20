@@ -142,8 +142,8 @@ about time to the MRCA for two randomly selected gene copies.
 \subsubsection{intutition behind the coalescent}
 Clever population geneticists realized that it was easier to make this model if
 we look backward and think about the question: ``if I've selected your 
-mitochondrial genome and JKK's, then that is the probability that the
-first generation that those mitochondria come from the woman was generation $g$?''
+mitochondrial genome and JKK's, then what is the probability that the
+first generation that those mitochondria come from the same woman was generation $g$?''
 We recall from high school biology that the mitochondrion is (1) the powerhouse of
 the cell, and (2) inherited maternally.\footnote{which is not quite true: \url{https://www.ncbi.nlm.nih.gov/pubmed/12192017}}
 That is why we are just thinking about sharing a female ancestor.
@@ -220,7 +220,7 @@ The law of total probability (when conditioning on a real, continuous variable i
 
 Applying this to our problem:
 \begin{eqnarray}
-L(u, N)  = \prod_{i=1}^n  & = & \int_{0}^{\infty} \Pr(X=k \mid u, t) f(t\mid N) dt \\
+L(u, N)  & = &   \int_{0}^{\infty} \Pr(X=k \mid u, t) f(t\mid N) dt \\
  & = & \int_{0}^{\infty} \left(\frac{(2ut)^k e^{-2ut}}{k!} \right)\left(\frac{1}{N}\right) e^{-t/N}dt \label{toughIntegral}
 \end{eqnarray}
 where we've set the lower bound of the integration to be 0 because time to MRCA can't be
@@ -374,7 +374,7 @@ in our case, becase we are integrating over $dt$), so:
 & = & \int_{0}^{\infty} \left(\frac{(2u)^k}{k!}\right) t^ke^{-2ut} \left(\frac{1}{N}\right) e^{-t/N} dt \\
 & = & \int_{0}^{\infty} \left(\frac{(2u)^k}{N(k!)}\right) t^ke^{-2ut} e^{-t/N} dt \\
 & = & \left(\frac{(2u)^k}{N(k!)}\right) \int_{0}^{\infty}  t^ke^{-2ut - (t/N)} dt \\
-& = & \left(\frac{(2u)^k}{N(k!)}\right) \int_{0}^{\infty}  t^ke^{-\frac{2uN - 1}{N} t} dt \\
+& = & \left(\frac{(2u)^k}{N(k!)}\right) \int_{0}^{\infty}  t^ke^{-\frac{2uN + 1}{N} t} dt \\
 & = & \left(\frac{(2u)^k}{N(k!)}\right) \int_{0}^{\infty}  t^ke^{-C t} dt \\
 \end{eqnarray*}
 where $C=\frac{2uN + 1}{N}$.

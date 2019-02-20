@@ -30,34 +30,80 @@ We worked through Bayes' rule and then talked about the difference
 between confidence intervals and Bayesian posterior probability
 statements (see \url{http://phylo.bio.ku.edu/biostats/bad_bean_counter.pdf})
 
+\section{Posterior distribution for $\nu$}
+
 \section{Revisiting the time to MRCA from mutation counts}
 \subsection{the data}
 Now we'll add my sequence to the previous example.
 We have a tree with 1 or 2 MRCAs.
+Our data is
+$X=[3,2,6]$,
+so our sample size is $n=3$.
 
-$X=[3,2,6]$
+\section{the likelihood}
+Given that we have worked on similar problems recently, we probably would reach
+for the Poisson likelihood:
 \begin{eqnarray}
-\Pr(X\mid \nu_1,\nu_2)& = & \prod_{i=1}{n} \Pr(x_i\mid, \nu_1,\nu_2)\\
+\Pr(X\mid ut_1, ut_2, ut_3)& = & \prod_{i=1}^{n} \Pr(x_i\mid ut_i)\\
+& = & \prod_{i=1}^{n} \frac{(ut_i)^{x_i}e^{-ut_i}}{x_i ! }
+\end{eqnarray}
+This is not wrong, but it fails to accurately convey the constraints on the parameter.
+If you and JKK share a mitochondrial MRCA more recently than either of you do with me, then $t_1=t_2$ and $t_3> t_1$.
+
+We can express those constraints on the parameters mathematically as an expression of the domain.
+In this case: 
+\begin{eqnarray}
+    t_1, t_2, t_3, u & \in &  \mathbb{R}\\
+    0 & < u < & \infty\\
+    0 & < t_1 < & \infty\\
+    t_1 & = & t_2 \\
+    t_1 & \leq & t_3
+\end{eqnarray}
+where the first line says that all four parameters are real numbers (not integers, 
+not complex numbers, {\em etc.}), and then the equations and inequalities constrain
+the feasible range of them.
+
+This is fine and it works fine.
+
+Sometimes it is easier to reparameterize in a way that makes the parameters more
+``orthogonal'' (in some vague sense).
+What occurs to me is to use $\omega$ to represent a mutation-rate-scaled waiting
+time to the previous coalescence event.
+That occurs to me because it is the kind of thing we often do in coalescent theory.
+It may not occur to you, and that is OK -- you can get the right answers without
+this reparameterization.
+
+Specifically:
+\begin{eqnarray}
+    \omega_1, \omega_2 & \in &  \mathbb{R}\\
+    0 & < \omega_1, \omega_2 < & \infty\\
+     ut_1 = ut_2 & = & 2\omega_1  \\
+    ut_3 &= & 2\omega_2 + \omega_1
+\end{eqnarray}
+
+
+\begin{eqnarray}
+\Pr(X\mid \omega_1,\omega_2)& = & \prod_{i=1}^{n} \Pr(x_i\mid \omega_1,\omega_2)\\
 & = &
- \frac{\nu_1^2e^{-\nu_1}\nu_1^3e^{-\nu_1}\left(\nu_1+2\nu_2\right)^6e^{-(\nu_1+2\nu_2)}}{2!3!6!} \\
-& = & \frac{1}{2!3!6!}\left[\nu_1^5e^{-2\nu_1}\right]
-\left[\left(\nu_1+2\nu_2\right)^6e^{-(\nu_1+2\nu_2)}\right] \\
-\ln L & = & -\ln(2!3!6!)+ \left[5 \ln(\nu_1) -2\nu_1\right] +
-\left[6\ln\left(\nu_1+2\nu_2\right) -\nu_1- 2\nu_2)\right] 
+ \frac{(2\omega_1)^2e^{-\omega_1}(2\omega_1)^3e^{-\omega_1}\left(\omega_1+2\omega_2\right)^6e^{-(\omega_1+2\omega_2)}}{2!3!6!} \\
+& = & \frac{2^2 2^3}{2!3!6!}\left[\omega_1^5e^{-2\omega_1}\right]
+\left[\left(\omega_1+2\omega_2\right)^6e^{-(\omega_1+2\omega_2)}\right] \\
+\ln L & = & 5\ln(2)-\ln(2!3!6!)+ \left[5 \ln(\omega_1) -2\omega_1\right] +
+\left[6\ln\left(\omega_1+2\omega_2\right) -\omega_1- 2\omega_2)\right] 
 \end{eqnarray}
 where the [] braces just help us see that the likelihood is coming from 2 paths in the tree: the one between JKK and you $x_1+x_2 = 5$ and the one that says that MTH
 is 6 mutations away from that common ancestor $x_3 = 6$
 
-You can derive how $\hat{nu_1}=2.5$ based soley on $x_1+x_2 = 5$.
+You can derive how $\hat{\omega_1}=2.5$ based soley on $x_1+x_2 = 5$.
 However it is not clear if that is actually the maximum likelihood
 if we use all the data (and we should always use all of the data).
 
-In this parameterization $\nu_2$ does not affect the probability of $x_1, x_2$ at 
+In this parameterization $\omega_2$ does not affect the probability of $x_1, x_2$ at 
 all. 
-But $\nu_2$ and $\nu_1$ both appear in the log likelihood from $x_3$.
-So if the MLE of $\nu_1$ from $x_3$ does not agree with 2.5, then we 
+But $\omega_2$ and $\omega_1$ both appear in the log likelihood from $x_3$.
+So if the MLE of $\omega_1$ from $x_3$ does not agree with 2.5, then we 
     will have some tension in the information provided by $x_1, x_2$
-    and $x_3$ about what $\nu_1$ should be and the estimate will be 
+    and $x_3$ about what $\omega_1$ should be and the estimate will be 
     some compromise.
 
 \end{document}
