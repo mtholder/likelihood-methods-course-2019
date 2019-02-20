@@ -1,0 +1,64 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage{amssymb}
+%\usepackage[nomarkers]{endfloat}
+\usepackage{natbib}
+\usepackage{setspace}
+\usepackage{wasysym}
+\usepackage{wrapfig}
+
+\textwidth = 7 in
+\textheight = 9 in
+\oddsidemargin = -0.5 in
+\evensidemargin = -0.5 in
+\topmargin = 0.0 in
+\headheight = 0.0 in
+\headsep = 0.0 in
+\parskip = 0.1in
+\parindent = 0in
+\renewcommand{\Pr}{\mathbb{P}}
+\usepackage{paralist}
+\usepackage{url}
+\newcommand{\href}[2]{\url{#2}}
+\usepackage{hyperref}
+\hypersetup{backref,   linkcolor=blue, citecolor=red, colorlinks=true, hyperindex=true}
+\begin{document}
+notes from the week of Feb.~18, 2019 \\
+\tableofcontents
+
+We worked through Bayes' rule and then talked about the difference
+between confidence intervals and Bayesian posterior probability
+statements (see \url{http://phylo.bio.ku.edu/biostats/bad_bean_counter.pdf})
+
+\section{Revisiting the time to MRCA from mutation counts}
+\subsection{the data}
+Now we'll add my sequence to the previous example.
+We have a tree with 1 or 2 MRCAs.
+
+$X=[3,2,6]$
+\begin{eqnarray}
+\Pr(X\mid \nu_1,\nu_2)& = & \prod_{i=1}{n} \Pr(x_i\mid, \nu_1,\nu_2)\\
+& = &
+ \frac{\nu_1^2e^{-\nu_1}\nu_1^3e^{-\nu_1}\left(\nu_1+2\nu_2\right)^6e^{-(\nu_1+2\nu_2)}}{2!3!6!} \\
+& = & \frac{1}{2!3!6!}\left[\nu_1^5e^{-2\nu_1}\right]
+\left[\left(\nu_1+2\nu_2\right)^6e^{-(\nu_1+2\nu_2)}\right] \\
+\ln L & = & -\ln(2!3!6!)+ \left[5 \ln(\nu_1) -2\nu_1\right] +
+\left[6\ln\left(\nu_1+2\nu_2\right) -\nu_1- 2\nu_2)\right] 
+\end{eqnarray}
+where the [] braces just help us see that the likelihood is coming from 2 paths in the tree: the one between JKK and you $x_1+x_2 = 5$ and the one that says that MTH
+is 6 mutations away from that common ancestor $x_3 = 6$
+
+You can derive how $\hat{nu_1}=2.5$ based soley on $x_1+x_2 = 5$.
+However it is not clear if that is actually the maximum likelihood
+if we use all the data (and we should always use all of the data).
+
+In this parameterization $\nu_2$ does not affect the probability of $x_1, x_2$ at 
+all. 
+But $\nu_2$ and $\nu_1$ both appear in the log likelihood from $x_3$.
+So if the MLE of $\nu_1$ from $x_3$ does not agree with 2.5, then we 
+    will have some tension in the information provided by $x_1, x_2$
+    and $x_3$ about what $\nu_1$ should be and the estimate will be 
+    some compromise.
+
+\end{document}
+
