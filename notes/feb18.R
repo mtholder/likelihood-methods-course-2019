@@ -35,14 +35,13 @@ plot(nu, -2*nu, type="l", ylim=c(-25,0), ylab="-2nu", xlab="nu")
 plot(nu,  5*log(nu) -2*nu, type="l", ylim=c(-25,0), ylab="log(Pr(x=5|nu))", xlab="nu")
 
 #require(sfsmisc)
+# xyg = xy.grid(x, y)
 s = 0.02
 nu = seq(s,7,by=s)
 x = nu
 y = nu
-# xyg = xy.grid(x, y)
 nx = length(x)
 ny = length(y)
-df  = 
 z = matrix(nrow=nx, ncol=ny)
 zf = matrix(nrow=nx, ncol=ny)
 for (i in 1:nx) {
@@ -52,7 +51,46 @@ for (i in 1:nx) {
   }
 }
 
+
 mz = max(z) -.00001
+pdf("images/out-6-root-spanning-lnL-contour.pdf")
 contour(x, y, z, levels=seq(mz, mz-10, by=-.5) )
+dev.off();
 mzf = max(zf)-.00001
-contour(x, y, zf, levels=seq(mzf, mzf-10, by=-.5) )
+pdf("images/out-6-full-lnL-contour.pdf");
+contour(x, y, zf, levels=seq(mzf, mzf-10, by=-.5) );
+dev.off();
+
+s = 0.02
+nu = seq(s,7,by=s)
+x = nu
+y = seq(-3.5, 7, by=s)
+nx = length(x)
+ny = length(y)
+z = matrix(nrow=nx, ncol=ny)
+zf = matrix(nrow=nx, ncol=ny)
+out.count = 3
+sum.in_count = 11 - out.count
+neg.inf = -1/0
+for (i in 1:nx) {
+  for (j in 1:ny) {
+    if (x[i] + 2*y[j] < 0) {
+      z[i,j] = neg.inf;
+      zf[i,j] = neg.inf;
+    } else {
+      z[i,j] = out.count*log(x[i] + 2*y[j]) - x[i] - 2*y[j] ;
+      zf[i,j] = sum.in_count*log(x[i]) -2*x[i] + out.count*log(x[i] + 2*y[j]) - x[i] - 2*y[j] ;
+    }
+  }
+}
+
+mz = max(z) -.00001
+pdf("images/out-3-root-spanning-lnL-contour.pdf")
+contour(x, y, z, levels=seq(mz, mz-10, by=-.5) )
+abline(h=0, lty=3)
+dev.off()
+mzf = max(zf)-.00001
+pdf("images/out-3-root-spanning-lnL-contour.pdf")
+contour(x, y, zf, levels=seq(mzf, mzf-10, by=-.5) );
+abline(h=0, lty=3)
+dev.off()
