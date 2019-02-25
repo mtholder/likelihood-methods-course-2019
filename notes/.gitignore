@@ -1,4 +1,4 @@
 *.log
-*.pdf
+/*.pdf
 *.out
 *.toc
