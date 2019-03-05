@@ -78,8 +78,7 @@ If you used a likelihood equation without the binomial coefficient, you would ge
 (compared to the values of these entities when you use a likelihood equation with the 
 binomial coefficient).
 
-
-\end{document}
+\section*{Notes}
 
 \section*{connecting mutation rate to a probability of mutation}
 For closely related sequences, we can ignore ``multiple hits'' (two mutations to the same
@@ -96,7 +95,7 @@ If we have a mutation rate we can use the Poisson where $\lambda = ut$.
 
 \section*{Estimating $p$ from data}
 If we have 2 and 3 mutations on sister branches (same time to the MRCA) and a total of 
-$M$ sites.
+$M=2000$ sites.
 For $n$ branches with a vector $y$ changes on each, and $k= \sum y$
 \begin{eqnarray*}
    L(p) =  \Pr(y_1=2, y_2=3 \mid p)
@@ -106,10 +105,18 @@ For $n$ branches with a vector $y$ changes on each, and $k= \sum y$
    \frac{d\ln L(p)}{dp} & = & \frac{k}{p} - \frac{nM - k}{1-p}\\
    \frac{k}{\hat{p}} & = & \frac{nM - k}{1-\hat{p}} \\
    k - k\hat{p} & = & nM\hat{p} - k\hat{p} \\
-   \frac{k}{nM} & = & \hat{p}
+   \frac{k}{nM} & = & \hat{p} = 5/4000 = 0.00125 \\
+   \ln L(p=0.00125) & = & 5\ln(p=0.00125) + 3995\ln(0.99875) + \ln\left({\frac{2000\times 1999}{2}}\right)+ \ln\left({\frac{2000\times 1999\times 1998}{6}}\right) \\
+   & = & -38.42 + \ln\left({\frac{2000\times 1999}{2}}\right)+ \ln\left({\frac{2000\times 1999\times 1998}{2}}\right) \\
+   & = & -38.42 + 35.52 = -2.90
 \end{eqnarray*}
 
-
+If we were testing against a null that $p_0= 0.001$:
+\begin{eqnarray*}
+\ln L(p=0.001) & = & 5\ln(p=0.001) + 3995\ln(0.999) + 35.52 \\
+& = & -38.53 + 35.52 = - 3.018 \\
+LRT = 2\times(-2.90 + 3.018) = 2\times0.115 = 0.23
+\end{eqnarray*}
 \section*{conditioning on $N$ instead of $t$}
 If we want to estimate the population size, we can integrate over $t$:
 \begin{eqnarray*}
