@@ -1,0 +1,124 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage{amssymb}
+%\usepackage[nomarkers]{endfloat}
+\usepackage{natbib}
+\usepackage{setspace}
+\usepackage{wasysym}
+\usepackage{wrapfig}
+\pagestyle{empty}
+\textwidth = 7 in
+\textheight = 9 in
+\oddsidemargin = -0.5 in
+\evensidemargin = -0.5 in
+\topmargin = 0.0 in
+\headheight = 0.0 in
+\headsep = 0.0 in
+\parskip = 0.1in
+\parindent = 0in
+\renewcommand{\Pr}{\mathbb{P}}
+\usepackage{paralist}
+\usepackage{url}
+\newcommand{\href}[2]{\url{#2}}
+\usepackage{hyperref}
+\hypersetup{backref,   linkcolor=blue, citecolor=red, colorlinks=true, hyperindex=true}
+\begin{document}
+\section*{Homework \#4} (due Monday, March 18)
+
+\#1. You want to estimate the relative frequency of the rare white color morph 
+in a populations of {\em Cirsium palustre} in France; most of the flowers are purple in this
+species.
+So you want to estimate some parameter $p$, which is the probability that a randomly selected
+individual will be a white flower.
+After obtaining a generous travel award, you collect individuals in two sampling events.
+The data for a total of $461$ plants are:\\
+\begin{tabular}{|l|r|r|r|}
+\hline
+Event & sample size & \# plants with white flowers & \# plants with purple flowers \\
+\hline
+ Sampling event 1 & $n_1 = 199$ & $x_1=4$ & 195 \\
+Sampling event 2  & $n_2 = 262$ &$x_2=8$ & 254 \\
+\hline
+\end{tabular}\\
+
+(A) Write a likelihood equation $p$ for a sample generically, then given the equation with the numbers for the first sample.
+
+(B) Consult the \url{https://en.wikipedia.org/wiki/Conjugate_prior#Table_of_conjugate_distributions} and then choose an appropriate prior distribution.
+You have to pretend you didn't see the data, but just thought that the white morph was rare.
+There is not one specific answer I'm looking for here -- it is {\em your} prior.
+
+(C) If you analyzed your data after the first sample, what would your posterior distribution
+on $p$ have been?
+
+(D) What is you 95\% credible interval for $p$ after seeing the first sample? 
+
+(E) What is the {\em maximum a posteriori} (MAP) estimate of $p$ after seeing the first sample?
+
+(F) Imagine that you take your prior from the posterior sampling event and use it as your prior
+for the second sampling event. 
+Give the posterior, MAP, and 95\% C.I. after considering the second sample after the first sample.
+
+(G) Now consider what would you would have gotten (posterior, MAP, and 95\% C.I.) if you
+had started with your naive prior and analyzed all of the data at one step. 
+Do you get a different posterior distribution?
+
+\vskip 15em (Question \#2 is on second page)
+\newpage
+(2) You are either a botanist or someone who enjoys pretending to be a botanist.
+You want to determine if there is evidence of crowding effects in reproductive success in your
+favorite annual  angiosperm.
+You set up an experiment in which you select a set of experimental plots which do not have 
+    any seeds of the plant.
+Then you transplant 1, 2, or 3 plants into each plot, and you allow them to grow for the year.
+Each plot has a barrier to prevent seeds from entering from the outside.
+The next year, you painstakingly count the number of small plants of your favorite species
+    that emerge.
+
+Your data:\\
+\begin{tabular}{|c|c|c|}
+\hline
+Plot & \# plants grown last year in the plot & \# of tiny plants this year \\
+\hline
+1 & 1 & 19\\
+2 & 2 & 25 \\
+3 & 3 &  39\\
+4 & 1 & 17 \\
+5 & 2 & 28\\
+6 & 3 & 35\\
+\hline
+\end{tabular}\\
+
+For the sake of this question, let's just assume that the number of plants should follow
+    a Poisson model with the expectation set by either a null model or an alternative.
+
+You would like to test the null hypothesis ($H_0$) of no evidence of a competitive interaction.
+In other words, if the null is correct the expected number of plants in this year is 
+simply a linear function of the number of plants in the plot last year.
+Furthermore, it is a linear function with a $y$-intercept of 0 (because we are assuming there
+was no seed bank from prior years, so you'd get no plant this year if you hadn't put
+any into the ground the previous year).
+So the null model has some slope that is unknown but represents the number of 
+    plants you expect to get in year $t+1$ from each plant that you put in the ground in year $t$.
+
+Test that null against 2 alternatives.
+
+The first alternative hypothesis, $H_1$, states that: (a) there is some expected reproductive success 
+    for the first plant in a plot, but (b) if a plot has $>1$ progenitor planted, then the expected number of plants in
+    the next year is a linear function of the number of ``extra'' parental plants (the 
+    number of plants over the first plant).
+
+
+The third alternative ($H_2$) is simply that you have different expected numbers of progeny
+    plants based on how many plants you put in the ground in the  first year. 
+So with $H_2$ have 3 expected numbers with no constrained relationship between them.
+(This may be the easiest hypothesis to start working on).
+
+
+Perform a maximum likelihood hypothesis test comparing these 3 models.
+Report the parameter estimates, and log-likelihoods, and the test statistics
+    used to decide which model is preferred.
+
+
+\end{document}
+
+
