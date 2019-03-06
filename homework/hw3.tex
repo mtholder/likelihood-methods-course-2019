@@ -117,7 +117,15 @@ If we were testing against a null that $p_0= 0.001$:
 & = & -38.53 + 35.52 = - 3.018 \\
 LRT = 2\times(-2.90 + 3.018) = 2\times0.115 = 0.23
 \end{eqnarray*}
+
+
 \section*{conditioning on $N$ instead of $t$}
+(this section was not a part of the homework, but I just wanted to illustrate that you can do the 
+same sort of ``integrate over all times if we want to learn about $N$'' when we
+have the binomial likelihoods as we did with the Poisson.
+You get very similar estimators when the probability of change is rare.)
+
+
 If we want to estimate the population size, we can integrate over $t$:
 \begin{eqnarray*}
 \Pr(>0 \mbox{ mutations} \mid u, N) & = & \int_0^\infty\left(1 - e^{- ut}\right)\frac{1}{N}e^{-t/N} dt\\
