@@ -78,9 +78,9 @@ If you used a likelihood equation without the binomial coefficient, you would ge
 (compared to the values of these entities when you use a likelihood equation with the 
 binomial coefficient).
 
-\section*{Notes}
+\section*{Notes which cover the answers to question \#2}
 
-\section*{connecting mutation rate to a probability of mutation}
+\subsection*{connecting mutation rate to a probability of mutation}
 For closely related sequences, we can ignore ``multiple hits'' (two mutations to the same
 site that result in the number of differences being less than the number of mutations).
 
@@ -93,7 +93,7 @@ If we have a mutation rate we can use the Poisson where $\lambda = ut$.
 
 
 
-\section*{Estimating $p$ from data}
+\subsection*{Estimating $p$ from data}
 If we have 2 and 3 mutations on sister branches (same time to the MRCA) and a total of 
 $M=2000$ sites.
 For $n$ branches with a vector $y$ changes on each, and $k= \sum y$
@@ -117,9 +117,11 @@ If we were testing against a null that $p_0= 0.001$:
 & = & -38.53 + 35.52 = - 3.018 \\
 LRT = 2\times(-2.90 + 3.018) = 2\times0.115 = 0.23
 \end{eqnarray*}
+that is not close to our 3.84 cutoff which we find by looking up the $\chi^{2}_{df=1,\alpha=0.05}$
+critical value.
 
 
-\section*{conditioning on $N$ instead of $t$}
+\subsection*{conditioning on $N$ instead of $t$}
 (this section was not a part of the homework, but I just wanted to illustrate that you can do the 
 same sort of ``integrate over all times if we want to learn about $N$'' when we
 have the binomial likelihoods as we did with the Poisson.
