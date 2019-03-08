@@ -1,0 +1,137 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage{amssymb}
+%\usepackage[nomarkers]{endfloat}
+\usepackage{natbib}
+\usepackage{setspace}
+\usepackage{wasysym}
+\usepackage{wrapfig}
+
+\textwidth = 7 in
+\textheight = 9 in
+\oddsidemargin = -0.5 in
+\evensidemargin = -0.5 in
+\topmargin = 0.0 in
+\headheight = 0.0 in
+\headsep = 0.0 in
+\parskip = 0.1in
+\parindent = 0in
+\renewcommand{\Pr}{\mathbb{P}}
+\usepackage{paralist}
+\usepackage{url}
+\newcommand{\href}[2]{\url{#2}}
+
+\newcommand{\birth}[1]{\lambda_{#1}}
+\newcommand{\death}[1]{\mu_{#1}}
+\usepackage{hyperref}
+\hypersetup{backref,   linkcolor=blue, citecolor=red, colorlinks=true, hyperindex=true}
+\begin{document}
+notes from the week of March 06, 2019 \\
+\tableofcontents
+
+
+\section{Birth-death Markov chain notes}
+The state space is the non-negative integers with the only possible changes in a single instant being
+an increase or decrease of 1.
+
+If we had been working in discrete time, our difference equations would have been:
+\begin{eqnarray}
+    p_0(t) & = & -\birth{0} p_0(t-1) + \death{1} p_1(t-1) \\
+    p_i(t) & = & \birth{i-1} p_{i-1}(t-1) -\left(\birth{i} + \death{i}\right) p_i(t-1) + \death{i+1} p_{i+1}(t-1)
+\end{eqnarray}
+where $\birth{i}$ is represents the probability of a birth if you are in state $i$ (an $i\rightarrow i+1$ transition), and $\death{i}$ the probability of a death if you are in state $i$ (an $i\rightarrow i-1$ transition).
+$p_{i}(t)$ is the probability of being in state $i$ at time (or iteration) $t$.
+
+
+But we were working in continuous time, so the general form of the differential
+equations is:
+\begin{eqnarray}
+    \frac{\partial p_0(t)}{\partial t} & = & -\birth{0} p_0(t) + \death{1} p_1(t) \label{diff0}\\
+    \frac{\partial p_i(t)}{\partial t} & = & \birth{i-1} p_{i}(t) -\left(\birth{i} + \death{i}\right) p_i(t) + \death{i+1} p_{i+1}(t) \label{diffi}
+\end{eqnarray}
+where $\birth{i}$ and $\death{i}$ now represent rates of births and deaths.
+Because we are working in continuous time, we don't have $t-1$ representing the previous iteration,
+    instead we make our fundamental statements based on the instantaneous rates of change.
+
+
+Frequently we use $\pi_i$ to represent the equilibrium probability of being in state $i$.
+JKK just used $p_i$ without the $(t)$ after it.
+
+{\bf If} there is an equlibrium, it will be a dynamic one.
+We can start by assuming that one exists and seeing if we can solve for it.
+From equation \ref{diff0} for state 0 we get:
+\begin{eqnarray}
+    0 & = & -\birth{0} \pi_0 + \death{1} \pi_1 \\
+    \pi_0 & = & \left(\frac{\death{1}}{\birth{0} }\right)\pi_1 \\
+    \pi_1 & = & \left(\frac{\birth{0}}{\death{1}}\right)\pi_0 \label{equil1}
+\end{eqnarray}
+We can use equation \ref{diffi} for state 1 to get:
+\begin{eqnarray}
+    0 & = & \birth{i-1} \pi_{i-1} -\left(\birth{i} + \death{i}\right)  \pi_{i}  + \death{i+1}  \pi_{i+1}\\
+    0 & = & \birth{0} \pi_{0} -\left(\birth{1} + \death{1}\right)  \pi_{1}  + \death{2}  \pi_{2}\\
+    0 & = & \death{1}\pi_1 -\left(\birth{1} + \death{1}\right)  \pi_{1}  + \death{2}  \pi_{2}\\
+    0 & = & -\birth{1}\pi_{1}  + \death{2}  \pi_{2}\\
+    \pi_1 & = & \left(\frac{\death{2}}{\birth{1} }\right)\pi_2 \\
+    \pi_2 & = & \left(\frac{\birth{1}}{\death{2}}\right)\pi_1 = \left(\frac{\birth{0}\birth{1}}{\death{1}\death{2}}\right)\pi_0 \label{equil2}
+\end{eqnarray}
+We are building up higher values of $i$ by balancing
+out the flow between the state $i$ and $i-1$.
+Equation (\ref{equil1}) expresses the relationship for state 1 in terms of its $i-1$ neighbor (state 0), 
+so it may not be surprising that we continues this and Equation (\ref{equil2})  for $\pi_2$ shows up as a balance between rates with states 1 and 2.
+
+If you continue this process you get:
+\begin{eqnarray}
+    \pi_i & = & \pi_0 \left(\frac{\birth{0}\birth{1}\ldots\birth{i-1}}{\death{1}\death{2}\ldots\death{i}}\right)\\
+   \pi_i & = & \pi_0 \prod_{j=1}^{i}\frac{\birth{j-1}}{\death{j}}\label{equil}
+\end{eqnarray}
+which is pleasingly terse.
+
+
+\subsection{special case: state-independent transitions rates}
+If $\birth{}$ is the same for all $i$ and $\death{}$ is a constant for all states then Equation (\ref{equil}), then it can be convenient to reparameterize into a ratio of $\birth{}$ and $\death{}$:
+\begin{eqnarray}
+    r & = & \frac{\birth{}}{\death{}} \\
+   \pi_i & = & \pi_0 \prod_{j=1}^{i}\frac{\birth{j-1}}{\death{j}} \\
+   & = & \pi_0 \prod_{j=1}^{i}\frac{\birth{}}{\death{}} \\
+   & = & \pi_0 \prod_{j=1}^{i}r \\
+   \pi_i& = & \pi_0 r^{i}  \label{equilc}
+\end{eqnarray}
+that is pleasingly even terser.
+
+It may look like that is simple enough, but if you know $\birth{}$ and $\death{}$, you'd just have the tautology $\pi_0 = \pi_0$ if you plug in $i=0$ into equation (\ref{equilc}).
+We could look up the geometric distribution in Wikipedia, or we could use some probability theory:
+\begin{eqnarray}
+    1 & = & \sum_{i=0}^{\infty}\pi_i \\
+     & = & \sum_{i=0}^{\infty}\left(\pi_0 r^{i}\right)\\
+     & = & \pi_0\sum_{i=0}^{\infty}r^{i}
+\end{eqnarray}
+because $1\times r = r$, we can get cute:
+\begin{eqnarray}
+    r & = & r\sum_{i=0}^{\infty}\pi_i \\
+     & = & r\sum_{i=0}^{\infty}\left(\pi_0 r^{i}\right)\\
+     & = & \sum_{i=0}^{\infty}\left(\pi_0 r^{1+i}\right)\\
+     & = & \pi_0\sum_{i=0}^{\infty}r^{1+i}
+\end{eqnarray}
+this enables some even further cuteness where we play with the bounds of the sum:
+\begin{eqnarray}
+    1 - r & = &  \pi_0\left(\sum_{i=0}^{\infty}r^{i}\right) - \pi_0\left(\sum_{i=0}^{\infty}r^{i+1}\right) \\
+    & = &  \pi_0\left(\sum_{i=0}^{\infty}r^{i} - \sum_{i=1}^{\infty}r^{i}\right)  \\
+    &= & \pi_0\left(r^ 0 + \sum_{i=1}^{\infty}r^{i} - \sum_{i=1}^{\infty}r^{i}\right) \\
+    &= & \pi_0
+\end{eqnarray}
+
+So:
+$$\pi_i& = & (1-r) r^{i}  $$
+is the general form of the equilibrium state frequency.
+
+
+\subsection{special case: each individual has the same birth and death rate}
+If $\birth{i}=i\birth{}$ and  $\death{i} = i\death{}$we run into problems with
+Equation (\ref{equil}) because the flux between state 0 and state 1
+is never balanced (since 0 is an absorbing state).
+
+
+
+
+\end{document}
+
