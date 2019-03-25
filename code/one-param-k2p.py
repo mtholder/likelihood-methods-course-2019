@@ -9,7 +9,7 @@ import os
 
 _LOG = logging.getLogger(__file__)
 def configure_logger():
-    if True or 'DEBUG' in os.environ:
+    if 'DEBUG' in os.environ:
         lvl = logging.DEBUG
     else:
         lvl = logging.INFO
