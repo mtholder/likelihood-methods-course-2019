@@ -1,0 +1,161 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage{amssymb}
+%\usepackage[nomarkers]{endfloat}
+\usepackage{natbib}
+\usepackage{setspace}
+\usepackage{wasysym}
+\usepackage{wrapfig}
+
+\textwidth = 7 in
+\textheight = 9 in
+\oddsidemargin = -0.5 in
+\evensidemargin = -0.5 in
+\topmargin = 0.0 in
+\headheight = 0.0 in
+\headsep = 0.0 in
+\parskip = 0.1in
+\parindent = 0in
+\renewcommand{\Pr}{\mathbb{P}}
+\usepackage{paralist}
+\usepackage{url}
+\newcommand{\href}[2]{\url{#2}}
+\newcommand{\myA}{e^{-4\nu/3}}
+\newcommand{\birth}[1]{\lambda_{#1}}
+\newcommand{\death}[1]{\mu_{#1}}
+\usepackage{hyperref}
+\hypersetup{backref,   linkcolor=blue, citecolor=red, colorlinks=true, hyperindex=true}
+\begin{document}
+
+Some useful links: 
+\begin{compactenum}
+    \item \url{https://en.wikipedia.org/wiki/Fisher_information}
+    \item \url{http://thestatsgeek.com/2014/02/08/wald-vs-likelihood-ratio-test/}
+    \item \url{https://en.wikipedia.org/wiki/Models_of_DNA_evolution#JC69_model_(Jukes_and_Cantor_1969)}
+\end{compactenum}
+
+Note that (under a few regularity conditions, such as the MLE not being 
+at the boundary of the feasible range), the Fisher Information ($\mathcal{I}$) at a point in
+parameter space, $\theta$, is:
+\begin{eqnarray}
+\mathcal{I}(\theta) & = & - \mathbb{E}_{\Pr(X\mid \theta)}
+\left(\frac{\partial^2 \ln \Pr(X\mid\theta)}{\partial \theta^2}\right)
+\end{eqnarray}
+In other words, it is the expected curvature (second derivative) of the log-likelihood function, where the expectation is taken with respect to
+the probability of the data (the likelihood function itself).
+
+\section*{Revisiting sequence comparisons}
+We worked through a brief discussion of the code associated with the
+    Kimura two-parameter model in class on Monday, 25 March.
+For simplicity, let's consider the special case where $\kappa=1$, so all mutation types
+    are occurring at the same rate (this is called the Jukes-Cantor model in molecular evolution).
+If we have a pair of sequences of total number of sites $ =n$, then $x$ will just be a count of the number
+    of sites at which they differ.
+Simplifying the probability statements that we saw on Monday will reveal that:
+\begin{eqnarray}
+\Pr(\mbox{same base in each seq.~at a site }\mid \nu) & = & \frac{1 + 3 \myA}{4} \\
+\Pr(\mbox{a difference between seqs. }\mid \nu) & = & \frac{3 - 3 \myA}{4}
+\end{eqnarray}
+where $\nu$ is a branch length which is interpreted as the expected number of changes per site.
+This looks complicated, but it really just amounts to their being some 
+probability of a difference: $0\leq p < 3/4$, so the probability of staying the
+same is $1-p$  and the feasible range is $0\leq 1- p < 1/4$.
+
+The easiest way to perform the inference is simply to use this alternative parameterization,
+an convert from $p$ into the $\nu$ parameterization whenever needed:
+\begin{eqnarray}
+p & = & \frac{3 - 3 \myA}{4} \\
+4 p &= & 3(1 - \myA) \\
+\frac{4p}{3} & = & 1 -\myA \\
+\myA &  = & 1 - \frac{4p}{3} \\
+-\frac{4\nu}{3} &= & \ln\left(1 - \frac{4p}{3}\right) \\
+\nu & = &  0.75 \ln\left(1 - \frac{4p}{3}\right)
+\end{eqnarray}
+Note that if we put in a value of $p > 0.75$, we end up trying to take the log of a negative number, so we have to pay attention to our feasible range.
+
+\subsection{Fisher Information for the binomial}
+Lo and behold, this means that (if we treat each site as independent), our likelihood is simply a binomial likelihood:
+\begin{eqnarray}
+\log L(p) & = & x \ln p + (n - x)\ln(1-p)
+\end{eqnarray}
+So:
+\begin{eqnarray}
+\frac{\partial\log L(p)}{p} & = & \frac{x}{p} - \frac{(n - x)}{(1-p)} \\
+\hat{p} & = & \left\{\begin{array}{ll}
+\frac{x}{n} & \mbox { if } \frac{x}{n} \leq 0.75 \\
+0.75 & \mbox { otherwise }
+\end{array} \right.  \\
+\mathcal{I}(p) & = & - \mathbb{E}_{\Pr(x\mid p)}\left(\frac{\partial^2 \ln \Pr(X\mid\theta)}{\partial \theta^2}\right) \\
+\frac{\partial^2\log L(p)}{p^2} & = & -\frac{x}{p^2} -\frac{(n-x)}{(1-p)^2}
+\end{eqnarray}
+Fortunately, the expected value for the binomial
+    is very similar to what we saw with the Bernoulli 
+    distribution that JKK talked about.
+If the probability of a success is $p$, then the expected number of successes is simply:
+$np$:
+\begin{eqnarray}
+\mathbb{E}_{\Pr(x\mid p)}\left(x\right) & = & np \\
+\mathbb{E}_{\Pr(x\mid p)}\left(n- x\right) & = & n - np = n(1-p) \\
+\end{eqnarray}
+Therefore the expected curvature at any point simplifies:
+\begin{eqnarray}
+\mathbb{E}_{\Pr(x\mid p)}\left(\frac{\partial^2 \ln \Pr(X\mid\theta)}{\partial \theta^2}\right)
+& = & -\frac{\mathbb{E}_{\Pr(x\mid p)}\left(x\right)}{p^2} -\frac{\mathbb{E}_{\Pr(x\mid p)}\left(n - x\right)}{(1-p)^2} \\
+ & = & -\frac{np}{p^2} -\frac{n(1-p)}{(1-p)^2} \\
+ & = & -\frac{n}{p} -\frac{n}{(1-p)} \\
+ & = & -\frac{n - np + np}{p(1-p)} \\
+ & = & -\frac{n}{p(1-p)} \\
+ \mathcal{I}(p) & = & \frac{n}{p(1-p)} \\
+\end{eqnarray}
+Note that the data does not appear in the generic form of Fisher's information because it is the expected value over all possible realizations of the data given the value of the parameter $p$.
+
+\section*{Wald test and standard errors}
+As JKK pointed out, you can compute a $Z^2$ value  for a test generically using:
+\begin{eqnarray}
+t = Z^2 & = & \frac{\left(\theta-\theta_0\right)^2}{\mbox{Var}(\hat{\theta})}
+\end{eqnarray}
+and you can look that up using a chi-square table with 1 degree of freedom (because the chi-square
+distribution with $k$ degrees of freeedom is simply the distribution you get
+if you sum of the squares of $k$ draws from the standard normal distribution).
+
+Thus we can see that we can convert the distance between our point estimate of the parameter
+    value to a $Z$ statistic by dividing through by the standard error
+    of $\theta$
+
+Interestingly (in many cases)
+\begin{eqnarray}
+\mbox{SE}(\hat{\theta}) & = & \sqrt{\frac{1}{ \mathcal{I}(\hat{\theta})}}
+\end{eqnarray}
+That may seem like magic, but hopefully it makes some sense.
+
+Fisher info is the variance of the slope of the log-likelihood surface. 
+
+The square root in the standard error formula should seem reasonable given the 
+    relationship between variances and standard deviations.
+
+Since we compare hypotheses using the difference in their log-likelihoods, the
+    slope of the $\ln L$ surface is saying something about how well we 
+    expect the data to be able to discriminate between different parameter values.
+So high Fisher Information, implies a very curved $\ln L$ around the MLE.
+Thus the peak is very sharp and pointed when Fisher Information.
+That means that we don't have to go out very far from the MLE before we have 
+    arrived at a much worse $\ln L$.
+This is the intuition of why the standard error should be something like 1 over the Fisher Information.
+
+\section*{Wald test and standard errors for the binomial}
+Going back to our specific case.
+If we only consider cases in which $\frac{x}{n} < 0.75$, then:
+\begin{eqnarray}
+\hat{p} & = & \frac{x}{n} \\
+\mathcal{I}(\hat{p}) & = & \frac{n}{\hat{p}(1-\hat{p})} \\
+\mbox{SE}(\hat{p}) & = & \sqrt{\frac{1}{ \mathcal{I}(\hat{p})}} \\
+& = & \sqrt{\frac{\hat{p}(1-\hat{p})}{n}}
+\end{eqnarray}
+Leading us (using the 1.96 from the $Z$ distribution) to the argument that we are about
+95\% confident that:
+\[
+\hat{p} - 1.96\sqrt{\frac{\hat{p}(1-\hat{p})}{n}} < p < \hat{p} + 1.96\sqrt{\frac{\hat{p}(1-\hat{p})}{n}} 
+\]
+
+\end{document}
+
