@@ -40,9 +40,12 @@ def fair_coin_prob(h, n):
 likelihood_factors = []
 
 def fill_likelihood_factors(data, num_coins):
+    if not data:
+        return
     max_obs = max(data)
     assert(max_obs <= num_coins)
-    assert(min(data) >= 0)
+    min_obs = min(data)
+    assert(min_data >= 0)
     for n in range(max_obs + 1):
         p = []
         for theta in range(num_coins + 1):
@@ -164,8 +167,11 @@ if __name__ == '__main__':
         assert(num_coins > 0)
         initial_state = int(sys.argv[3])
         assert(num_coins > 0)
-        data = tuple([int(i) for i in sys.argv[4:]])
-        assert(len(data) > 0)
+        if len(sys.argv) > 4:
+            data = tuple([int(i) for i in sys.argv[4:]])
+            assert(len(data) > 0)
+        else:
+            data = []
     except:
         sys.exit('Expeciting:\npython coin_contamination.py <# iter> <# coins> <start state> <datum #1> <datum #2>...\n')
     main(data, num_coins, initial_state)
