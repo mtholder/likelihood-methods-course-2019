@@ -1,0 +1,151 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage{amssymb}
+%\usepackage[nomarkers]{endfloat}
+\usepackage{natbib}
+\usepackage{setspace}
+\usepackage{wasysym}
+\usepackage{wrapfig}
+\pagestyle{empty}
+\textwidth = 7 in
+\textheight = 9 in
+\oddsidemargin = -0.5 in
+\evensidemargin = -0.5 in
+\topmargin = 0.0 in
+\headheight = 0.0 in
+\headsep = 0.0 in
+\parskip = 0.1in
+\parindent = 0in
+\renewcommand{\Pr}{\mathbb{P}}
+\usepackage{paralist}
+\usepackage{url}
+\newcommand{\href}[2]{\url{#2}}
+\usepackage{tikz}
+  \usetikzlibrary{shapes.geometric}
+  \usetikzlibrary{arrows.meta,arrows}
+  \usetikzlibrary{positioning,automata}
+\usepackage{hyperref}
+\hypersetup{backref,   linkcolor=blue, citecolor=red, colorlinks=true, hyperindex=true}
+\begin{document}
+\section*{Homework \#6} (due Wednesay, April 17)
+
+You can use the \href{https://github.com/mtholder/likelihood-methods-course-2019/raw/master/homework/mutt_gamete_event.tsv}{mutt_gamete_event.tsv} data for this
+homework.
+In that tab-separated spreadsheet, I have cleaned the 
+    original data into a series of events.
+Each event is either a recombination event (code 'R' 
+    in the first column) or an end of the chromosome
+    event (code 'E').
+In the second column, we have the number of bases
+    that separate the event from the previous
+    event.
+
+This encoding looses the info about which stretches of the
+    DNA are Dingo or Labrador.
+But because that information did not affect the likelihood,
+    it is easier to not deal with it.
+The chromosome identity is also lost.
+
+
+Email your code in with the homework.
+You can write your own code or use the 
+    \href{https://github.com/mtholder/likelihood-methods-course-2019/blob/master/homework/hw6-template.py}{python template}
+or the 
+    \href{https://github.com/mtholder/likelihood-methods-course-2019/blob/master/homework/hw6-template.R}{R template} provided.
+
+\#1. Find the MLE of the per-base recombination probability, $r$, using
+numerical methods.
+    (Ideally this number will agree with what you calculated analytically
+    in the previous homework).
+
+
+\#2. Use the 1.92 $\ln L$ drop rule to find a 95\% confidence interval
+    for $r$.
+
+\#3. Consider the following extension:
+Interference is the genetics name for ``non-independence of recombination
+    events.''
+A very simple model of interference is that 
+    $r$ describes the per-base recombination probability for ``uninhibited''
+    DNA, but a recombination event inhibits another recombination event
+    from happening within a window around the point of recombination.
+Let's use $w$ to denote the length of the window of inhibition.
+This zone of inhibition acts before and after each recombination event.
+
+For example, if $w=2$, you could imagine a state space like this:\\
+\begin{tikzpicture}
+[->,>=stealth',shorten >=1pt,auto,
+ node,semithick, 
+ every state/.style={fill=red,draw=none,text=black,shape=ellipse}]
+\node[state, fill=orange] (A) {Unhib.~Dingo};
+%\node[state, fill=orange,text=black] (B) [right=of A] {Inhib.~Dingo 2B};
+%\node[state, fill=orange,text=black] (C) [right=of B] {Inhib.~Dingo 1B};
+\node[state, fill=black,text=white] (D) [right=of A] {Inhib.~Labra 1A};
+\node[state, fill=black,text=white] (E) [right=of D] {Inhib.~Labra 2A};
+\node[state, fill=black,text=white] (F) [below=of E] {Unhib.~Labra};
+\node[state, fill=orange,text=black] (G) [below=of A] {Inhib.~Dingo 2A};
+\node[state, fill=orange,text=black] (H) [right=of G] {Inhib.~Dingo 1A};
+%\node[state, fill=black,text=white] (I) [below=of H] {Inhib.~Labra 1B};
+%\node[state, fill=black,text=white] (J) [right=of I] {Inhib.~Labra 2B};
+\path (A) edge node {$r$} (D) ;
+\path (A) edge [loop above] node {$1-r$} (A) ;
+%\path (B) edge node {$1$} (C) ;
+%\path (C) edge node {$1$} (D) ;
+\path (D) edge node {$1$} (E) ;
+\path (E) edge node {$1$} (F) ;
+\path (F) edge [loop below] node {$1-r$} (F) ;
+\path (F) edge node {$r$} (H) ;
+%\path (J) edge node {$1$} (I) ;
+%\path (I) edge node {$1$} (H) ;
+\path (H) edge node {$1$} (G) ;
+\path (G) edge node {$1$} (A) ;
+\end{tikzpicture}\\
+where the ``Unhib.'' states are outside of the window and can
+be subject to a random recombination trigger event.
+Note that the only real randomness is in the stretches of
+    ``Uninhibited'' bases.
+The transitions in the inhibited states all occur with probability 1.
+
+The start state for the chromosome would be in either 
+    the ``Unhibited Dingo'' or
+    ``Uninhibited Labrador'' state with probability 0.5 
+
+{\bf The task will be to find the MLE of $w$ and $r$, and do a LRT
+    to see if this model of interference fits better than
+    the model with no interference effects.
+}
+
+Fortunately, we don't have to draw a complicated state-space 
+    diagram for every different value of $w$.
+You just need to extend your likelihood model such that:
+\begin{compactenum}
+    \item If 2 recombination events happen within $w$ of each
+        other, the likelihood is 0; and
+    \item The probability of no recombination at between
+        any bases that are within $w$ of a recombination event
+        is 1.
+\end{compactenum}
+
+This is a 2-parameter optimization problem ($r$ and $w$ must
+    be jointly optimized).
+Also note that $w$ is an integer, but numerical optimizers 
+    will send in floating point numbers for $w$.
+I would recommend just rounding the $w$ parameter 
+    down to an integer in the likelihood.
+This will mean that the likelihood function is a step function
+    in the $w$ dimension.
+This can create optimization problems.
+
+One alternative is to get a rough estimate of $w$ using the 2-dimensional
+    numerical optimizer, and then use for-loops to examine
+    higher and lower values of $w$ around the initial
+    rough guess.
+
+Another possibility helpful hint: you might be able
+    to figure out the largest possible $w$ for your data
+    set and provide that as an initial bracketing constraint.
+
+
+\end{document}
+
+
