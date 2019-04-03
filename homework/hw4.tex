@@ -20,6 +20,7 @@
 \usepackage{paralist}
 \usepackage{url}
 \newcommand{\href}[2]{\url{#2}}
+\newcommand{\answer}[1]{{\color{red}#1}}
 \usepackage{hyperref}
 \hypersetup{backref,   linkcolor=blue, citecolor=red, colorlinks=true, hyperindex=true}
 \begin{document}
@@ -43,25 +44,67 @@ Sampling event 2  & $n_2 = 262$ &$x_2=8$ & 254 \\
 
 (A) Write a likelihood equation $p$ for a sample generically, then given the equation with the numbers for the first sample.
 
+\answer{
+\begin{eqnarray}
+L(p\mid x) = \Pr(x \mid n, p) & = & {n\choose x} p^x(1-p)^{n-x}\\
+L(p\mid x) =\Pr(x=4 \mid n=199, p) & = & {199\choose 4} p^4(1-p)^{195}
+\end{eqnarray}
+}
+
 (B) Consult the \url{https://en.wikipedia.org/wiki/Conjugate_prior#Table_of_conjugate_distributions} and then choose an appropriate prior distribution.
 You have to pretend you didn't see the data, but just thought that the white morph was rare.
 There is not one specific answer I'm looking for here -- it is {\em your} prior.
 
+\answer{
+The Beta distribution is conjugate to the binomial likelihood. If we think that
+the frequency of the white morph is rare, and choose (somewhat arbitrarily)
+that we'd like the mean of our prior on $p$ to be around 0.1, then we could use 
+a $p\sim\mbox{Beta}(\alpha=1, \beta=9)$ as our prior.
+I'll use this prior for the rest of the answer$\ldots$
+}
+
 (C) If you analyzed your data after the first sample, what would your posterior distribution
 on $p$ have been?
 
+\answer{
+using the notation on the wikipedia page, for the first trial:
+$n=1$ (because $n$ is counting the number of trials), and $N_1=199$ (the sample size), so the posterior is:
+$$ \mbox{Beta}(\alpha=1+4, \beta=9+195) = \mbox{Beta}(\alpha=5, \beta=204) $$ 
+}
+
 (D) What is you 95\% credible interval for $p$ after seeing the first sample? 
 
+\answer{
+{\tt qbeta(0.025, 5, 204)} and {\tt qbeta(0.975, 5, 204)} in {\tt R} reveal that
+the 95\%credible interval is $(0.00785, 0.0485)$
+}
+
 (E) What is the {\em maximum a posteriori} (MAP) estimate of $p$ after seeing the first sample?
+
+\answer{
+Using the formuala for the mode of a Beta:
+$$ MAP(p) = \hat{p} = \frac{\alpha - 1}{\alpha + \beta - 2} = \frac{4}{207} = 0.0193$$
+}
+
 
 (F) Imagine that you take your prior from the posterior sampling event and use it as your prior
 for the second sampling event. 
 Give the posterior, MAP, and 95\% C.I. after considering the second sample after the first sample.
 
+\answer{
+We end up with a
+    $$ \mbox{Beta}(\alpha=5+8, \beta=204+254) = \mbox{Beta}(\alpha=13, \beta=458) $$ 
+the 95\%credible interval is $(0.0148, 0.0442)$.
+The MAP is $MAP(p) = \hat{p} = 0.0256$
+}
+
 (G) Now consider what would you would have gotten (posterior, MAP, and 95\% C.I.) if you
 had started with your naive prior and analyzed all of the data at one step. 
 Do you get a different posterior distribution?
 
+\answer{
+No, you end up with the same posterior working with all the data or in a two-step analysis.
+}
 \vskip 15em (Question \#2 is on second page)
 \newpage
 (2) You are either a botanist or someone who enjoys pretending to be a botanist.
@@ -100,6 +143,7 @@ any into the ground the previous year).
 So the null model has some slope that is unknown but represents the number of 
     plants you expect to get in year $t+1$ from each plant that you put in the ground in year $t$.
 
+
 Test that null against 2 alternatives.
 
 The first alternative hypothesis, $H_1$, states that: (a) there is some expected reproductive success 
@@ -118,7 +162,110 @@ Perform a maximum likelihood hypothesis test comparing these 3 models.
 Report the parameter estimates, and log-likelihoods, and the test statistics
     used to decide which model is preferred.
 
+\answer{
+    There are 6 trials, but only 3 starting conditions. 
+    Given that we'd have the same expected number of seedlings given the 
+    same input, we have three distinct expected numbers of offspring:
 
+We can use $j$ to index the trial within a given starting number, 
+and we use $i$ to index the \# of plants put into the ground.
+We'll ignore the denominator (factorials) in the Poisson likelihood
+because they depend on the data and not the parameters (so they are the
+    same for all models).
+
+We'll use $x_{i\ast}$ for $\sum_{j=1}^2x_{i,j}$.
+So this is the total number of seedlindgs for each number put in.\
+In our data: $x_{1\ast}=36$  and $x_{2\ast}=53$ and $x_{3\ast}=74$ 
+
+The most general model is $H_2$:
+\begin{eqnarray}
+\ln L(\lambda_1, \lambda_2, \lambda_3 \mid X) & = & \sum_{i=1}^{3}\sum_{j=1}^2
+\left(x_{i,j} \ln \lambda_i - \lambda_i\right) \\
+& = & \sum_{i=1}^{3}x_{i\ast}\ln(\lamba_i) - 2\lambda_i
+\end{eqnarray}
+Working through the derivatives, we find that the 3 sampling set ups don't affect
+    each other.
+So the MLEs are just the means for each condition:
+\begin{eqnarray}
+\widehat{\lambda_i} & = & \frac{x_{i\ast}}{2} \\
+\widehat{\lambda_1} & = & \frac{36}{2} = 18 \\
+\widehat{\lambda_2} & = & \frac{53}{2} = 26.5 \\
+\widehat{\lambda_3} & = & \frac{74}{2} = 37 \\
+\ln L(\lambda_1=18, \lambda_2=26.5, \lambda_3=37 \mid X) & = & 381.95
+\end{eqnarray}
+
+In model $H_0$ we have a constraint:
+\begin{eqnarray}
+{\lambda_1} & = & m \\
+{\lambda_2} & = & 2m \\
+{\lambda_3} & = & 3m 
+\end{eqnarray}
+where $m$ (the number of seedlings per plant in a density-independent model)
+is unknown.
+This let's us rewrite the likelihood in terms of our unknown:
+
+\begin{eqnarray}
+\ln L(m\mid X, H_0) & = & \sum_{i=1}^{3}x_{i\ast}\ln(i m) - 2im \\
+& = & x_{1\ast}\ln(m) - 2m + x_{2\ast}\ln(2m) - 4m + x_{3\ast}\ln(3m) - 6m\\
+& = & (x_{1\ast} + x_{2\ast} + x_{3\ast})\ln(m) - 12m + x_{2\ast}\ln(2) + x_{3\ast}\ln(3) \\
+\frac{\partial \ln L}{\partial m} & = & \frac{x_{1\ast}+ x_{2\ast} + x_{3\ast}}{m} - 12 \\
+\hat{m} &  = & \frac{x_{1\ast}+ x_{2\ast} + x_{3\ast}}{12} = 13.58\\
+{\lambda_1}  = \hat{m} &= &13.58\\
+{\lambda_2}  = 2\hat{m}& =& 27.16 \\
+{\lambda_3}  = 3\hat{m}& =& 40.75 \\
+\ln L(m=13.58\mid X) & = & 380.38
+\end{eqnarray}
+
+
+
+$H_1$ is a middle ground with a different set of constraints:
+In model $H_0$ we have a constraint:
+\begin{eqnarray}
+{\lambda_1} & = & b \\
+{\lambda_2} & = & b + c \\
+{\lambda_3} & = & b + 2c 
+\end{eqnarray}
+so:
+\begin{eqnarray}
+\ln L(b, c\mid X, H_1) & = & \sum_{i=1}^{3}x_{i\ast}\ln(b + (i-1) c) - 2(b + (i-1) c)m \\
+& = & x_{1\ast}\ln(b)  + x_{2\ast}\ln(b+c)  + x_{3\ast}\ln(b+2c) - 6b - 6c \\
+\frac{\partial \ln L}{\partial c} & = & \frac{x_{2\ast}}{b+c} + \frac{2x_{3\ast}}{b+2c} - 6 \\
+\frac{\partial \ln L}{\partial b} & = & \frac{x_{1\ast}}{b} +  \frac{x_{2\ast}}{b+c} + \frac{x_{3\ast}}{b+2c} - 6 \\
+\end{eqnarray}
+So, finding the joint MLEs, we get 2 equations:
+
+\begin{eqnarray}
+\frac{x_{2\ast}}{\hat{b}+\hat{c}} + \frac{2x_{3\ast}}{\hat{b}+2\hat{c}} & = & 6 \label{shortest}\\
+\frac{x_{1\ast}}{\hat{b}} + \frac{x_{2\ast}}{\hat{b}+\hat{c}} + \frac{x_{3\ast}}{\hat{b}+2\hat{c}} & = & 6
+\end{eqnarray}
+Rearranging the second then substituting into the first:
+\begin{eqnarray}
+ \frac{x_{2\ast}}{\hat{b}+\hat{c}} + \frac{x_{3\ast}}{\hat{b}+2\hat{c}} & = & 6 - \frac{x_{1\ast}}{\hat{b}}\\
+ \frac{x_{3\ast}}{\hat{b}+2\hat{c}} + 6 -\frac{x_{1\ast}}{\hat{b}} & = & 6 \\
+ \frac{x_{3\ast}}{\hat{b}+2\hat{c}} & = & \frac{x_{1\ast}}{\hat{b}}  \\
+\hat{b}x_{3\ast} & = &\hat{b}x_{1\ast} + 2\hat{c}x_{1\ast}\\
+\hat{c} &  = & \hat{b}\frac{x_{3\ast} - x_{1\ast}}{2x_{1\ast}} \\
+%\hat{b} &  = & \hat{c}\frac{2x_{1\ast}}{x_{3\ast} - x_{1\ast}}\\
+\end{eqnarray}
+
+Substituting in for $\hat{b}$ into Equation \ref{shortest} we get:
+\begin{eqnarray}
+\frac{x_{2\ast}}{\hat{b} + \hat{b} \frac{x_{3\ast} - x_{1\ast}}{2x_{1\ast}} }
+  + \frac{2x_{3\ast}}{\hat{b} + 2\hat{b} \frac{x_{3\ast} - x_{1\ast}}{2x_{1\ast}}} & = & 6 \\
+\frac{x_{2\ast}}{1 + \frac{x_{3\ast} - x_{1\ast}}{2x_{1\ast}} }
+  + \frac{2x_{3\ast}}{1 + \frac{2x_{3\ast} - 2x_{1\ast}}{2x_{1\ast}}}   & = & 6\hat{b}\\
+\frac{{2x_{1\ast}}x_{2\ast}}{2x_{1\ast} + x_{3\ast} - x_{1\ast} }
+  + \frac{4x_{1\ast}x_{3\ast}}{2x_{1\ast} + 2x_{3\ast} - 2x_{1\ast}}}   & = & 6\hat{b}\\
+\frac{{2x_{1\ast}}x_{2\ast}}{x_{1\ast} + x_{3\ast} }
+  + 2x_{1\ast}}   & = & 6\hat{b}\\
+\hat{b} & \approx & 17.782 \\
+\hat{c} & \approx & 9.385 \\
+\ln L(b=17.782, c=9.385\mid X, H_1) & = & 381.926
+\end{eqnarray}
+
+So the $H_0$ cannot be rejected by the 1.92 lnL difference rule.
+
+}
 \end{document}
 
 
