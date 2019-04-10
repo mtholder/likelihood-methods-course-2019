@@ -28,7 +28,6 @@ def n_choose_k(n, k):
         num *= (n - i)
         denom *= (i + 1)
     nck = num/denom
-    #print n, k, nck
     return nck
 
 def fair_coin_prob(h, n):
@@ -45,7 +44,7 @@ def fill_likelihood_factors(data, num_coins):
     max_obs = max(data)
     assert(max_obs <= num_coins)
     min_obs = min(data)
-    assert(min_data >= 0)
+    assert(min_obs >= 0)
     for n in range(max_obs + 1):
         p = []
         for theta in range(num_coins + 1):
@@ -87,7 +86,7 @@ def run_mcmc(data, num_coins, initial_state):
         sys.exit('Illegal start state {}. likelihood of 0\n'.format(initial_state))
     status_function("Iter\tlike\ttheta\n")
     # This is MCMC using the Metropolis algorithm:
-    for i in xrange(num_it):
+    for i in range(num_it):
         status_function("%d\t%f\t%d\n" % (i, likelihood, state))
         # record current position.
         mcmc_samples[state] += 1
@@ -116,18 +115,18 @@ def run_mcmc(data, num_coins, initial_state):
     return mcmc_samples
 
 def summarize_mcmc(mcmc_samples, num_coins):         
-    print "Posterior probabilities from MCMC"
+    print("Posterior probabilities from MCMC")
     for state in range(num_coins + 1):
-        print state, float(mcmc_samples[state])/num_it
+        print(state, float(mcmc_samples[state])/num_it)
 
-    print "\nTrue Posterior probabilities (calculated analytically)"
+    print("\nTrue Posterior probabilities (calculated analytically)")
     likelihood_list = [calc_likelihood(i) for i in range(num_coins + 1)]
     marginal_prob = sum(likelihood_list)
     for state, likelihood in enumerate(likelihood_list):
-        print state, likelihood/marginal_prob
+        print(state, likelihood/marginal_prob)
 
-    print "\nTransition Probabilities (calculated analytically):\n                       From"
-    print "     " + "    ".join(["%7d" % i for i in range(num_coins + 1)])
+    print("\nTransition Probabilities (calculated analytically):\n                       From")
+    print("     " + "    ".join(["%7d" % i for i in range(num_coins + 1)]))
     for num_dh in range(num_coins + 1):
         ind_below = num_dh - 1
         ind_above = num_dh + 1 if num_dh < num_coins else 0
@@ -151,7 +150,7 @@ def summarize_mcmc(mcmc_samples, num_coins):
         ti_probs[num_dh] = same_state
         ti_probs[ind_below] = ti_prob_below
         ti_probs[ind_above] = ti_prob_above
-        print "%-4d  %s" % (num_dh, " ".join([" %7f " % d for d in ti_probs]))
+        print("%-4d  %s" % (num_dh, " ".join([" %7f " % d for d in ti_probs])))
 
 def main(data, num_coins, initial_state):
     fill_likelihood_factors(data, num_coins)
