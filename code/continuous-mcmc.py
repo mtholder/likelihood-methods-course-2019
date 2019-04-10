@@ -92,8 +92,8 @@ def main(data, theta):
 
     sys.stderr.write('mu accept %    = {:6.5f}\n'.format(n_accept_mu/n_prop_mu))
     sys.stderr.write('sigma accept % = {:6.5f}\n'.format(n_accept_sigma/n_prop_sigma))
-    print('Posterior mean of mu    = {}'.format(sum_mean/num_samples))
-    print('Posterior mean of sigma = {}'.format(sum_sd/num_samples))
+    sys.stderr.write('Posterior mean of mu    = {}\n'.format(sum_mean/num_samples))
+    sys.stderr.write('Posterior mean of sigma = {}\n'.format(sum_sd/num_samples))
 
 if __name__ == '__main__':
     try:
