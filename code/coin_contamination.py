@@ -91,20 +91,14 @@ def run_mcmc(data, num_coins, initial_state):
         # record current position.
         mcmc_samples[state] += 1
         prev_likelihood = likelihood
-        
         proposed = propose_a_new_state(state, num_coins)
-
         # Prior ratio is 1.0, so we could ignore it...
         prior_ratio = (0.2)/(0.2)
-
         likelihood = calc_likelihood(proposed)
         likelihood_ratio = likelihood/prev_likelihood
-
         posterior_ratio = likelihood_ratio*prior_ratio
-
         # Hastings ratio is 1.0, so we can ignore it...
         hastings_ratio = (0.5)/(0.5)
-
         # Decide whether to accept
         acceptance_ratio = posterior_ratio*hastings_ratio
         if random.random() < acceptance_ratio:

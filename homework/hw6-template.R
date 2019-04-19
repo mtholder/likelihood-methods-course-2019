@@ -5,7 +5,19 @@ distance = data$num_base_pairs_to_prev
 num.chrom = sum(as.character(events) == "E")
 num.crossovers = sum(as.character(events) == "R")
 
-lnlf = function(r) {
+lnlf = function(theta) {
+  r = theta[1]
+  w = theta[2]
+  if (w > threshold) {
+    return(-Inf);
+  }
+  if (r > 1) {
+    return(-Inf);
+  }
+  if (r < 0) {
+    return(-Inf);
+  }
+  
   lnl = 0.0;
   prev.was.recomb = FALSE;
   for (i in 1:length(events)) {
