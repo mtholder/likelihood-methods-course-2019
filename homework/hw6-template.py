@@ -129,15 +129,14 @@ def estimate_global_MLE(event_list, bracket):
 
 def estimate_global_MLE_2(event_list, params):
     func_adapt = lambda p : scipy_ln_likelihood(p, ln_likelihood_interference)
-    param_opt = optimize.minimize(func_adapt, params,
-                                  options={'xtol':1e-8, 'disp':False})
-    return param_opt.x, param_opt.fun
+    param_opt = optimize.fmin(func_adapt, params, xtol=1e-8, disp=False)
+    return param_opt, -func_adapt(param_opt)
 
 DATA = None
 def scipy_ln_likelihood(parameters, fn):
     '''This is our simple adaptor to make a minimizer maximize.'''
     negLnL = -fn(parameters, DATA)
-    _LOG.debug('ln_likelihood({p}) = {l}'.format(p=repr(parameters), l=-negLnL))
+    # _LOG.debug('ln_likelihood({p}) = {l}'.format(p=repr(parameters), l=-negLnL))
     return negLnL
 
 def get_events_from_file(data_filepath):
@@ -158,13 +157,12 @@ def main(data_filepath):
     max_r = 0.5
     bracket = (min_r, some_guess_for_r, max_r)
     
-    # mle_1, lnL_1 = estimate_global_MLE(events, bracket)
+    mle_1, lnL_1 = estimate_global_MLE(events, bracket)
     b2, b2lnl = None, WORST_LN_L
     w = 2
     while True:
         ini = [some_guess_for_r, w]
         mle_2, lnL_2 = estimate_global_MLE_2(events, ini)
-        sys.exit(1)
         _LOG.debug('started w={w} ln_likelihood({p}) = {l}'.format(w=w, p=repr(mle_2), l=lnL_2))
         if lnL_2 < REALLY_BAD_LNL:
             break
