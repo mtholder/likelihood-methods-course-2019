@@ -19,14 +19,15 @@ def calc_ln_likelihood(data, theta):
     ln_like += s
     return ln_like
 
+WINDOW_SIZE = 0
 def main(data, theta):
     ln_likelihood = calc_ln_likelihood(data, theta)
 
-    mu_window = 2.0E6
-    sigma_window = 2.0E6
+    mu_window = WINDOW_SIZE
+    sigma_window = WINDOW_SIZE
     # This is MCMC using the Metropolis algorithm:
     out = sys.stdout
-    out.write("Iter\tlike\tmu\tsigma\n")
+    out.write("mu\tsigma\n")
     n_prop_mu = 0
     n_prop_sigma = 0
     n_accept_mu = 0
@@ -49,7 +50,7 @@ def main(data, theta):
             num_samples += 1
             sum_mean += theta[0]
             sum_sd += theta[1]
-            out.write("{}\t{}\t{}\t{}\n".format(1 + i, ln_likelihood, theta[0], theta[1]))
+            out.write("{}\t{}\n".format(theta[0], theta[1]))
         prev_ln_likelhood = ln_likelihood
         if random.random() < 0.5:
             # change mu
@@ -99,11 +100,12 @@ if __name__ == '__main__':
     try:
         num_it = int(sys.argv[1])
         assert(num_it > 0)
-        theta = [float(sys.argv[2]), float(sys.argv[3])]
-        datafn = sys.argv[4]
+        WINDOW_SIZE = float(sys.argv[2])
+        theta = [float(sys.argv[3]), float(sys.argv[4])]
+        datafn = sys.argv[5]
     except:
         sys.exit('''Script to estimate mean and standard deviation of the normal distribution using improper uniform priors.\n
-Expecting:\npython continuous-mcmc.py <# iter> <start mu> <start sigma> <data filename>
+Expecting:\npython continuous-mcmc.py <# iter> <window size> <start mu> <start sigma> <data filename>
 Data should just be a column of real numbers (one per line).
 ''')
     try:
