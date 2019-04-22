@@ -22,8 +22,8 @@ def calc_ln_likelihood(data, theta):
 def main(data, theta):
     ln_likelihood = calc_ln_likelihood(data, theta)
 
-    mu_window = 20.0
-    sigma_window = 20.0
+    mu_window = 2.0E6
+    sigma_window = 2.0E6
     # This is MCMC using the Metropolis algorithm:
     out = sys.stdout
     out.write("Iter\tlike\tmu\tsigma\n")
