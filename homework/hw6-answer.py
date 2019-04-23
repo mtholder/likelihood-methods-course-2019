@@ -49,6 +49,10 @@ class ProbRecomb:
     def recomb_prob(r_param):
         return r_param
 
+    @staticmethod
+    def rev_transform(r_param):
+        return r_param
+
 class UsingDecimal:
     @staticmethod
     def to_logs(r_param):
@@ -61,6 +65,30 @@ class UsingDecimal:
     @staticmethod
     def recomb_prob(r_param):
         return r_param
+
+    @staticmethod
+    def rev_transform(r_param):
+        return r_param
+        
+
+class UsingLogit:
+    @staticmethod
+    def to_logs(r_param):
+        r = UsingLogit.recomb_prob(r_param)
+        return UsingDecimal.to_logs(r)
+
+    @staticmethod
+    def recomb_prob(r_param):
+        d = decimal.Decimal(r_param)
+        de = d.exp()
+        ad = de/(1 + de)
+        return float(ad)
+
+    @staticmethod
+    def rev_transform(r_param):
+        n,d = UsingDecimal.to_logs(r_param)
+        return n - d
+
 
 transformation = UsingDecimal
 NUM_CALLS = 0
@@ -107,8 +135,7 @@ def ln_likelihood_interference_int(r_param, w, data):
     global NUM_CALLS
     NUM_CALLS += 1
     if w < 0:
-        return WORST_LN_L
-        return (-w)*ln_likelihood(r_param, data)
+        return (1-w)*ln_likelihood(r_param, data)
     log_r, log_omr = transformation.to_logs(r_param)
     ln_l = 0.0
     try:
@@ -179,10 +206,15 @@ def main(data_filepath):
     global DATA
     events = get_events_from_file(data_filepath)
     DATA = events
-    min_r = 0.0
+    min_r = 1e-700
     some_guess_for_r = 0.001
     max_r = 0.5
-    bracket = (min_r, some_guess_for_r, max_r)
+    raw_bracket = (min_r, some_guess_for_r, max_r)
+    bracket = [transformation.rev_transform(i) for i in raw_bracket]
+    bracket[0] = float('-inf')
+    bracket = tuple(bracket)
+    print(raw_bracket)
+    print(bracket)
     
     mle_1, lnL_1 = estimate_global_MLE(events, bracket)
     one_param_num_calls = NUM_CALLS
