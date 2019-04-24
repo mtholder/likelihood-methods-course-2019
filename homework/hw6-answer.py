@@ -53,6 +53,25 @@ class ProbRecomb:
     def rev_transform(r_param):
         return r_param
 
+
+class UsingTaylorSeries:
+    @staticmethod
+    def to_logs(r_param):
+        if r_param <= 0.0 or r_param > 1.0:
+            return WORST_LN_L, WORST_LN_L
+        if r_param > 1e-6:
+            return ProbRecomb.to_logs(r_param)
+        return log(r_param), -r_param
+
+    @staticmethod
+    def recomb_prob(r_param):
+        return r_param
+
+    @staticmethod
+    def rev_transform(r_param):
+        return r_param
+
+
 class UsingDecimal:
     @staticmethod
     def to_logs(r_param):
@@ -90,7 +109,7 @@ class UsingLogit:
         return n - d
 
 
-transformation = UsingDecimal
+transformation = ProbRecomb
 NUM_CALLS = 0
 def ln_likelihood(parameter, data):
     '''Here we need to calculate the log likelihood for
@@ -213,8 +232,8 @@ def main(data_filepath):
     bracket = [transformation.rev_transform(i) for i in raw_bracket]
     bracket[0] = float('-inf')
     bracket = tuple(bracket)
-    print(raw_bracket)
-    print(bracket)
+    #print(raw_bracket)
+    #print(bracket)
     
     mle_1, lnL_1 = estimate_global_MLE(events, bracket)
     one_param_num_calls = NUM_CALLS
