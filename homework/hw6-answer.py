@@ -39,6 +39,8 @@ WORST_LN_L = float('-inf')
 
 
 class ProbRecomb:
+    LOWEST_R_PARAM = 0
+
     @staticmethod
     def to_logs(r_param):
         if r_param <= 0.0 or r_param > 1.0:
@@ -55,6 +57,8 @@ class ProbRecomb:
 
 
 class UsingTaylorSeries:
+    LOWEST_R_PARAM = 0
+
     @staticmethod
     def to_logs(r_param):
         if r_param <= 0.0 or r_param > 1.0:
@@ -73,6 +77,8 @@ class UsingTaylorSeries:
 
 
 class UsingDecimal:
+    LOWEST_R_PARAM = 0
+
     @staticmethod
     def to_logs(r_param):
         if r_param <= 0.0 or r_param > 1.0:
@@ -91,6 +97,8 @@ class UsingDecimal:
         
 
 class UsingLogit:
+    LOWEST_R_PARAM = float('-inf')
+
     @staticmethod
     def to_logs(r_param):
         r = UsingLogit.recomb_prob(r_param)
@@ -109,7 +117,7 @@ class UsingLogit:
         return n - d
 
 
-transformation = ProbRecomb
+transformation = UsingDecimal
 NUM_CALLS = 0
 def ln_likelihood(parameter, data):
     '''Here we need to calculate the log likelihood for
@@ -230,13 +238,14 @@ def main(data_filepath):
     max_r = 0.5
     raw_bracket = (min_r, some_guess_for_r, max_r)
     bracket = [transformation.rev_transform(i) for i in raw_bracket]
-    bracket[0] = float('-inf')
+    bracket[0] = transformation.LOWEST_R_PARAM
     bracket = tuple(bracket)
-    #print(raw_bracket)
-    #print(bracket)
     
+
     mle_1, lnL_1 = estimate_global_MLE(events, bracket)
+    r1 = transformation.recomb_prob(mle_1)
     one_param_num_calls = NUM_CALLS
+    
     b2, b2lnl = None, WORST_LN_L
     w = 2
     while True:
@@ -251,7 +260,7 @@ def main(data_filepath):
 
     mle_2, lnL_2 = b2, b2lnl
     two_param_num_calls = NUM_CALLS
-    r1 = transformation.recomb_prob(mle_1)
+    
     print('mle: r={}'.format(r1))
     print('lnL(r) = {:12}'.format(lnL_1))
     print('# calls = {:12}'.format(one_param_num_calls))
