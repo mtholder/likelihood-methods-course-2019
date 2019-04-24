@@ -117,7 +117,7 @@ class UsingLogit:
         return n - d
 
 
-transformation = UsingDecimal
+transformation = UsingTaylorSeries
 NUM_CALLS = 0
 def ln_likelihood(parameter, data):
     '''Here we need to calculate the log likelihood for

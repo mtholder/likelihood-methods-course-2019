@@ -29,18 +29,34 @@
 \begin{document}
 \section*{Homework \#7} (due Monday, May 6)
 
-You can use the shortened \href{https://github.com/mtholder/likelihood-methods-course-2019/raw/master/homework/short_mutt_gamete_event.tsv}{short_mutt_gamete_event.tsv (click on this link and download)} data for this
-homework.
-(see hw 6 for description of the data)
+You can use the shortened \href{https://github.com/mtholder/likelihood-methods-course-2019/raw/master/homework/short_mutt_gamete_event.tsv}{short\_mutt\_gamete\_event.tsv (click on this link and download)} data for this
+homework
+(see hw 6 for description of the data format).
 
 
+We'll look at the same model that we used in the last homework,
+    but we'll take a Bayesian perspective.
+So you'll need to state prior probability distributions for all
+    input parameters/models.
 
 \#1. Implement MCMC for the two-parameter ($r$ and $w$) model. Report the posterior means and 95\% credible intervals for the 2 parameters.
 
 
-\#2. Implement a reversible-jump MCMC version of your code to examine the $w=0$ as a special case submodel.
+\#2. Report the PRSF (gelman diagnostic) for your MCMC runs.
 
+\#3. Implement a reversible-jump MCMC version of your code to examine the $w=0$ as a special case submodel.
+Report the probability that $w > 0$.
+You'll need to design some move that takes you from the one parameter model
+($w=0$) to the two parameter ($w>0$), and derive the Hasting's
+ratio for that move.
 
+References:
+\begin{itemize}
+ \item \href{http://phylo.bio.ku.edu/slides/hastingsRatio.pdf}{hastingsRatio.pdf}
+\item \href{https://github.com/mtholder/likelihood-methods-course-2019/tree/master/code}{code directory for MTH's lectures}. {\tt coda.R} and
+{\tt continuous-mcmc.py} are particularly relevant.
+\item \url{http://patricklam.org/teaching/convergence_print.pdf}
+\end{itemize}
 \end{document}
 
 
