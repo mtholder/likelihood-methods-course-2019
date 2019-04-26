@@ -7,3 +7,5 @@ Scripts
   * [`./k2p.py`](./k2p.py) and [`one-param-k2p.py`](./one-param-k2p.py) Python numerical optimizer examples
   * [`./one-param-k2p.R`](./one-param-k2p.R) R numerical optimizer example
   * [`./sample-data.csv`](./sample-data.csv) input for `continuous-mcmc.py`
+
+Note: my anwser to HW 6 is in [`../homework/hw6-answer.py`](../homework/hw6-answer.py)
