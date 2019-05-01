@@ -71,7 +71,7 @@ Samples=len(observations)
 states = ('habitat A','habitat B')
 start_probability = {'habitat A':0.5,'habitat B':0.5}
 
-transition_probability=[{} for j in xrange(Samples-1)] # 
+transition_probability=[{} for j in range(Samples-1)] # 
 
 for x1 in range(Samples-1): # 
 	transition_probability[x1] ={ 'habitat A': {'habitat A':0.9,'habitat B':0.1}, 'habitat B': {'habitat A':0.1,'habitat B':0.9} }
@@ -80,7 +80,7 @@ for x1 in range(Samples-1): #
 llx,fprbs,rprbs=foward_backward(observations,states,start_probability,transition_probability)
 
 
-print "LL  ",llx
+print("LL  ",llx)
 
 
 postProb=[{} for j in range(len(fprbs))] # 
@@ -93,7 +93,7 @@ for j in range(len(fprbs)):
 
 
 for j in range(Samples):
-	print j,observations[j],postProb[j]['habitat A'],postProb[j]['habitat B']
+	print(j,observations[j],postProb[j]['habitat A'],postProb[j]['habitat B'])
 
 
 

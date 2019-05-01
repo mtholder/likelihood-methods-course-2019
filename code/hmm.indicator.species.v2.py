@@ -102,7 +102,7 @@ tr = zsol[0]
 
 llx,fprbs,rprbs=foward_backward(observations,states,start_probability,[tr])
 
-print "LL = ",llx," mle Transition rate ",tr
+print("LL = ",llx," mle Transition rate ",tr)
 
 postProb=[{} for j in range(len(fprbs))] # 
 for j in range(len(fprbs)):
@@ -114,7 +114,7 @@ for j in range(len(fprbs)):
 
 
 for j in range(Samples):
-	print j,observations[j],postProb[j]['habitat A'],postProb[j]['habitat B']
+	print(j,observations[j],postProb[j]['habitat A'],postProb[j]['habitat B'])
 
 
 
